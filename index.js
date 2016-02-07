@@ -1,16 +1,15 @@
 'use strict'
-
 class EdgeMap extends Map {
   set (name, vertex) {
-    if (vertex.constructor.name === 'DAG') {
-      return super(name, vertex)
+    if (!(vertex instanceof DG)) {
+      vertex = new DG(vertex)
     }
-    throw new Error('invalid vertex')
+    return super.set(name, vertex)
   }
 }
 
-// A very generic Directed acyclic graph implementation
-module.exports = class DAG {
+// A very generic Directed graph implementation
+const DG = module.exports = class DG {
   /**
    * Create a new vertex
    * @param {DAG} vertex a vertex to copy or an intial value
@@ -21,7 +20,7 @@ module.exports = class DAG {
 
     if (vertex) {
       // copy constructor
-      if (vertex.constructor.name === 'DAG') {
+      if (vertex instanceof DG) {
         Object.assign(this, vertex)
       } else {
         this.value = vertex
@@ -43,7 +42,7 @@ module.exports = class DAG {
   }
 
   set (path, vertex) {
-    path = !Array.isArray(path) ? [path] : path
+    path = formatPath(path)
     let name = path.pop()
 
     if (!path.length) {
@@ -53,17 +52,18 @@ module.exports = class DAG {
 
     let nextVertex = this.edges.get(name)
     if (!nextVertex) {
-      nextVertex = new DAG()
-      this.edges.set(path, nextVertex)
+      nextVertex = new DG()
+      this.edges.set(name, nextVertex)
     }
 
     nextVertex.set(path, vertex)
   }
 
   get (path) {
-    path = !Array.isArray(path) ? [path] : path
+    path = formatPath(path)
     let name = path.pop()
 
+    // the last name in the path
     if (!path.length) {
       return this.edges.get(name)
     }
@@ -73,11 +73,11 @@ module.exports = class DAG {
       return
     }
 
-    nextVertex.get(path)
+    return nextVertex.get(path)
   }
 
   delete (path) {
-    path = !Array.isArray(path) ? [path] : path
+    path = formatPath(path)
     let name = path.pop()
 
     if (!path.length) {
@@ -89,12 +89,45 @@ module.exports = class DAG {
       return false
     }
 
-    nextVertex.get(path)
+    let wasDeleted = nextVertex.delete(path)
+    if (nextVertex.isEmpty()) {
+      this.edges.delete(name)
+    }
+    return wasDeleted
   }
 
-  iterDepth () {}
-  iterBreath () {}
-  iterPath (path) {}
+  isEmpty () {
+    return !this.edges.size && (this._value === null || this._value === undefined)
+  }
+
+  * [Symbol.iterator] (vistedVertices) {
+    if (!vistedVertices) {
+      vistedVertices = vistedVertices
+    }
+
+    if (!vistedVertices.has(this)) {
+      vistedVertices.add(this)
+      yield this
+      for (let vertex in this._edges) {
+        yield* vertex[Symbol.iterator](vistedVertices)
+      }
+    }
+  }
+
+  * iterPath (path) {
+    path = formatPath(path)
+    let name = path.pop()
+    yield this
+
+    let nextVertex = this.edges.get(name)
+    if (nextVertex) {
+      yield* nextVertex.iterPath
+    }
+  }
+}
+
+function formatPath (path) {
+  return (Array.isArray(path) ? path : [path]).slice()
 }
 
 /**
