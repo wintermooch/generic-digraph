@@ -8,8 +8,13 @@ class EdgeMap extends Map {
   }
 }
 
+const DELETE = Symbol()
+const SET = Symbol()
+const GET = Symbol()
+
 // A very generic Directed graph implementation
 const DG = module.exports = class DG {
+
   /**
    * Create a new vertex
    * @param {DAG} vertex a vertex to copy or an intial value
@@ -43,6 +48,11 @@ const DG = module.exports = class DG {
 
   set (path, vertex) {
     path = formatPath(path)
+    this[SET](path, vertex)
+    return this
+  }
+
+  [SET] (path, vertex) {
     let name = path.pop()
 
     if (!path.length) {
@@ -61,6 +71,10 @@ const DG = module.exports = class DG {
 
   get (path) {
     path = formatPath(path)
+    return this[GET](path)
+  }
+
+  [GET] (path) {
     let name = path.pop()
 
     // the last name in the path
@@ -78,6 +92,10 @@ const DG = module.exports = class DG {
 
   delete (path) {
     path = formatPath(path)
+    return this[DELETE](path)
+  }
+
+  [DELETE] (path) {
     let name = path.pop()
 
     if (!path.length) {
