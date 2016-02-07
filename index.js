@@ -1,19 +1,22 @@
 'use strict'
+// Just a map that forces each element to be a Vertex
 class EdgeMap extends Map {
   set (name, vertex) {
-    if (!(vertex instanceof DG)) {
-      vertex = new DG(vertex)
+    if (!(vertex instanceof Vertex)) {
+      vertex = new Vertex(vertex)
     }
     return super.set(name, vertex)
   }
 }
 
+// used to attach the internal functions
 const DELETE = Symbol()
 const SET = Symbol()
 const GET = Symbol()
+const ITERPATH = Symbol()
 
 // A very generic Directed graph implementation
-const DG = module.exports = class DG {
+const Vertex = module.exports = class Vertex {
 
   /**
    * Create a new vertex
@@ -25,7 +28,7 @@ const DG = module.exports = class DG {
 
     if (vertex) {
       // copy constructor
-      if (vertex instanceof DG) {
+      if (vertex instanceof Vertex) {
         Object.assign(this, vertex)
       } else {
         this.value = vertex
@@ -33,21 +36,34 @@ const DG = module.exports = class DG {
     }
   }
 
+  /**
+   * @property {map} edges a map of edges that the vertex has
+   */
   get edges () {
     return this._edges
   }
 
+  /**
+   * @property {*} value the value of the vertex
+   */
   get value () {
     return this._value
   }
-
   set value (val) {
     this._value = val
     return val
   }
 
+  /**
+   * Set a path to a vertex or value
+   * @method set
+   * @param {array} path
+   * @param {*} vertex
+   */
   set (path, vertex) {
+    // only do the path validation here
     path = formatPath(path)
+    //  all ther really work is done here
     this[SET](path, vertex)
     return this
   }
@@ -62,13 +78,19 @@ const DG = module.exports = class DG {
 
     let nextVertex = this.edges.get(name)
     if (!nextVertex) {
-      nextVertex = new DG()
+      nextVertex = new Vertex()
       this.edges.set(name, nextVertex)
     }
 
     nextVertex.set(path, vertex)
   }
 
+  /**
+   * Gets a vertex from the given path
+   * @method set
+   * @param {array} path
+   * @return {DG}
+   */
   get (path) {
     path = formatPath(path)
     return this[GET](path)
@@ -90,6 +112,12 @@ const DG = module.exports = class DG {
     return nextVertex.get(path)
   }
 
+  /**
+   * deletes a vertex at given path
+   * @method delete
+   * @param {array} path
+   * @return {boolean} whether the delete was succesful
+   */
   delete (path) {
     path = formatPath(path)
     return this[DELETE](path)
@@ -114,10 +142,18 @@ const DG = module.exports = class DG {
     return wasDeleted
   }
 
+  /**
+   * Returns truthy on whether the vertexs is empty
+   * @method isEmpty
+   * @return {boolean}
+   */
   isEmpty () {
     return !this.edges.size && (this._value === null || this._value === undefined)
   }
 
+  /**
+   * @method Symbol.iterator
+   */
   * [Symbol.iterator] (vistedVertices) {
     if (!vistedVertices) {
       vistedVertices = vistedVertices
@@ -132,8 +168,15 @@ const DG = module.exports = class DG {
     }
   }
 
+  /**
+   * @method iterPath
+   */
   * iterPath (path) {
     path = formatPath(path)
+    return this[ITERPATH](path)
+  }
+
+  * [ITERPATH] (path) {
     let name = path.pop()
     yield this
 
@@ -147,16 +190,3 @@ const DG = module.exports = class DG {
 function formatPath (path) {
   return (Array.isArray(path) ? path : [path]).slice()
 }
-
-/**
- * immutable notes
-  getRoot (path) {}
-  setRoot (path, ref) {}
-  delRoot (path) {}
-
-  batch (ops) {
-    // NO READS ALLOWED
-    // build ops tree
-    // at every branch of the operation tree we can parrilize
-  }
-**/

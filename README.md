@@ -1,39 +1,20 @@
-//DAG design
+# SYNOPSIS 
+[![NPM Package](https://img.shields.io/npm/v/generic-digraph.svg?style=flat-square)](https://www.npmjs.org/package/generic-digraph)
+[![Build Status](https://img.shields.io/travis/wanderer/generic-digraph.svg?branch=master&style=flat-square)](https://travis-ci.org/wanderer/generic-digraph)
+[![Coverage Status](https://img.shields.io/coveralls/wanderer/generic-digraph.svg?style=flat-square)](https://coveralls.io/r/wanderer/generic-digraph)
 
-let rootNode = new DAG()
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)  
 
-rootNode = rootNode.put([path], {value| DAG })
-rootNode.batch()
-let newnode = rootNode.get([path])
+This is a generic directional graph implementation
 
-nodenode.del
-newnode.links //rawlinks
-newnode.value
+# USAGE
 
-let root = newnode.getRoot()
-someothernode.setRoot()
+```javascript
+  
+```
 
-// node.setValue()
-// node.setValue()
+# API
+[./docs/](./docs/index.md)
 
-// rootNode.getRoot()
-// rootNode.getRoot([path])
-// rootNode.setRoot()
-// rootNode.setRoot([path])
-
-//Breath or depth?
-// newnode.next([path])
-// newnode.forEach((node, path))
-newnode.iterDepth
-newnode.iterBreath
-newnode.iterPath([])
-
-
-//overridse
-DAG.setLink = function(linkedNode){
-
-}
-
-DAG.getLink = function(link){}
-DAG.setValue = function(){}
-DAG.getValue = function(){}
+# LICENSE
+[MPL-2.0](https://tldrlegal.com/license/mozilla-public-license-2.0-(mpl-2))
