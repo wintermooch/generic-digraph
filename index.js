@@ -64,25 +64,29 @@ const Vertex = module.exports = class Vertex {
     // only do the path validation here
     path = formatPath(path)
     //  all ther really work is done here
-    this[SET](path, vertex)
-    return this
+    return this[SET](path, vertex)
   }
 
   [SET] (path, vertex) {
     let name = path.pop()
-
+    // we are at the end of the path
     if (!path.length) {
-      this.edges.set(name, vertex)
-      return
+      // if we are not setting vertex assume we are setting just the value
+      if (!(vertex instanceof Vertex) && this.edges.has(name)) {
+        let old = this.edges.get(name)
+        old.value = vertex
+        vertex = old
+      }
+      return this.edges.set(name, vertex)
     }
 
     let nextVertex = this.edges.get(name)
+    // automatical grow the graph if the path enconters missing vertices
     if (!nextVertex) {
       nextVertex = new Vertex()
       this.edges.set(name, nextVertex)
     }
-
-    nextVertex.set(path, vertex)
+    return nextVertex.set(path, vertex)
   }
 
   /**
