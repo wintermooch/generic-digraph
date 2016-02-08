@@ -40,3 +40,23 @@ tape('paths', function (t) {
   t.end()
 })
 
+tape('iterators', function (t) {
+  let graph = new DG()
+  let path = Array(100).fill(Symbol())
+  let value = Symbol()
+
+  graph.set(path, value)
+  let foundPath = [...graph.iterPath(path)]
+  t.equal(foundPath.length, 100, 'the iterator should return all the vertices on the path')
+  t.equal(foundPath[99].value, value)
+
+  // add another path to the graph
+  path = Array(100).fill(Symbol())
+  value = Symbol()
+  graph.set(path, value)
+
+  let vertices = [...graph]
+  t.equal(vertices.length, 201, 'the iterator should return all the vertices')
+  t.end()
+})
+

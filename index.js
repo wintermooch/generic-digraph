@@ -152,37 +152,39 @@ const Vertex = module.exports = class Vertex {
   }
 
   /**
+   * Does a depth first iteration of the graph
    * @method Symbol.iterator
    */
   * [Symbol.iterator] (vistedVertices) {
     if (!vistedVertices) {
-      vistedVertices = vistedVertices
+      vistedVertices = new WeakSet()
     }
 
     if (!vistedVertices.has(this)) {
       vistedVertices.add(this)
       yield this
-      for (let vertex in this._edges) {
-        yield* vertex[Symbol.iterator](vistedVertices)
+      for (let edge of this.edges) {
+        yield* edge[1][Symbol.iterator](vistedVertices)
       }
     }
   }
 
   /**
+   * iterates a given path
    * @method iterPath
+   * @param {array} path
    */
   * iterPath (path) {
     path = formatPath(path)
-    return this[ITERPATH](path)
+    yield* this[ITERPATH](path)
   }
 
   * [ITERPATH] (path) {
     let name = path.pop()
-    yield this
-
     let nextVertex = this.edges.get(name)
     if (nextVertex) {
-      yield* nextVertex.iterPath
+      yield nextVertex
+      yield* nextVertex[ITERPATH](path)
     }
   }
 }
