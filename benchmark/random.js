@@ -1,4 +1,3 @@
-// https://github.com/ethereum/wiki/wiki/Benchmarks
 'use strict'
 const Graph = require('../')
 
