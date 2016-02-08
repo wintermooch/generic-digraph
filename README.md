@@ -20,13 +20,23 @@ vertex.set('friend', 'alice')
 
 // if paths have more than one name in them they can arrays
 vertex.set(['friend', 'brother'], 'bob')
+//now the graph looks like:
+// [vertex]---friend--->[alice]---brother-->[bob]
+
+//path names and vertex values can be anything
+vertex.set([new Buffer('friend'), 5, false, {}, new Date()], Array())
 
 // edges are stored in a Map
-vertex.edges
+vertex.edges // Map{}
 
-// delete a edge
+//getting a vertex works like setting
+var friendsBotherVertex = vertex.get(['friend', 'brother'])
+friendsBotherVertex.value //"bob"
+
+// delete an edge
 vertex.delete('friend')
-  
+//now the vertex is empty
+vertex.isEmpty()
 ```
 
 # API
