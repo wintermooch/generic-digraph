@@ -75,7 +75,7 @@ const Vertex = module.exports = class Vertex {
       if (!(vertex instanceof Vertex) && this.edges.has(name)) {
         let old = this.edges.get(name)
         old.value = vertex
-        vertex = old
+        return old
       }
       return this.edges.set(name, vertex)
     }
