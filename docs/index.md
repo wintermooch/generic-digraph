@@ -1,6 +1,6 @@
 # constructor
 
-[index.js:25-37](https://github.com/wanderer/generic-digraph/blob/213b75843ab04f16419de496507fa63bb406b567/index.js#L25-L37 "Source code on GitHub")
+[index.js:25-37](https://github.com/wanderer/generic-digraph/blob/9d0bbe4de0c97c6f165e320222323284723062f0/index.js#L25-L37 "Source code on GitHub")
 
 Create a new vertex
 
@@ -10,7 +10,7 @@ Create a new vertex
 
 # delete
 
-[index.js:121-124](https://github.com/wanderer/generic-digraph/blob/213b75843ab04f16419de496507fa63bb406b567/index.js#L121-L124 "Source code on GitHub")
+[index.js:121-124](https://github.com/wanderer/generic-digraph/blob/9d0bbe4de0c97c6f165e320222323284723062f0/index.js#L121-L124 "Source code on GitHub")
 
 deletes a vertex at given path
 
@@ -22,7 +22,7 @@ Returns **boolean** whether the delete was succesful
 
 # edges
 
-[index.js:42-44](https://github.com/wanderer/generic-digraph/blob/213b75843ab04f16419de496507fa63bb406b567/index.js#L42-L44 "Source code on GitHub")
+[index.js:42-44](https://github.com/wanderer/generic-digraph/blob/9d0bbe4de0c97c6f165e320222323284723062f0/index.js#L42-L44 "Source code on GitHub")
 
 **Properties**
 
@@ -30,7 +30,7 @@ Returns **boolean** whether the delete was succesful
 
 # get
 
-[index.js:94-97](https://github.com/wanderer/generic-digraph/blob/213b75843ab04f16419de496507fa63bb406b567/index.js#L94-L97 "Source code on GitHub")
+[index.js:94-97](https://github.com/wanderer/generic-digraph/blob/9d0bbe4de0c97c6f165e320222323284723062f0/index.js#L94-L97 "Source code on GitHub")
 
 Gets a vertex from the given path
 
@@ -42,7 +42,7 @@ Returns **DG**
 
 # isEmpty
 
-[index.js:150-152](https://github.com/wanderer/generic-digraph/blob/213b75843ab04f16419de496507fa63bb406b567/index.js#L150-L152 "Source code on GitHub")
+[index.js:150-152](https://github.com/wanderer/generic-digraph/blob/9d0bbe4de0c97c6f165e320222323284723062f0/index.js#L150-L152 "Source code on GitHub")
 
 Returns truthy on whether the vertexs is empty
 
@@ -50,7 +50,7 @@ Returns **boolean**
 
 # iterPath
 
-[index.js:177-180](https://github.com/wanderer/generic-digraph/blob/213b75843ab04f16419de496507fa63bb406b567/index.js#L177-L180 "Source code on GitHub")
+[index.js:177-180](https://github.com/wanderer/generic-digraph/blob/9d0bbe4de0c97c6f165e320222323284723062f0/index.js#L177-L180 "Source code on GitHub")
 
 iterates a given path
 
@@ -60,7 +60,7 @@ iterates a given path
 
 # iterator
 
-[index.js:158-170](https://github.com/wanderer/generic-digraph/blob/213b75843ab04f16419de496507fa63bb406b567/index.js#L158-L170 "Source code on GitHub")
+[index.js:158-170](https://github.com/wanderer/generic-digraph/blob/9d0bbe4de0c97c6f165e320222323284723062f0/index.js#L158-L170 "Source code on GitHub")
 
 Does a depth first iteration of the graph
 
@@ -70,7 +70,7 @@ Does a depth first iteration of the graph
 
 # set
 
-[index.js:63-69](https://github.com/wanderer/generic-digraph/blob/213b75843ab04f16419de496507fa63bb406b567/index.js#L63-L69 "Source code on GitHub")
+[index.js:63-69](https://github.com/wanderer/generic-digraph/blob/9d0bbe4de0c97c6f165e320222323284723062f0/index.js#L63-L69 "Source code on GitHub")
 
 Set a path to a vertex or value
 
@@ -81,7 +81,7 @@ Set a path to a vertex or value
 
 # value
 
-[index.js:49-51](https://github.com/wanderer/generic-digraph/blob/213b75843ab04f16419de496507fa63bb406b567/index.js#L49-L51 "Source code on GitHub")
+[index.js:49-51](https://github.com/wanderer/generic-digraph/blob/9d0bbe4de0c97c6f165e320222323284723062f0/index.js#L49-L51 "Source code on GitHub")
 
 **Properties**
 
