@@ -29,6 +29,12 @@ vertex.set([new Buffer('friend'), 5, false, {}, new Date()], Array())
 // edges are stored in a Map
 vertex.edges // Map{}
 
+//you can iterate the graph to get all of its vertices
+var vertices = [...vertex]
+
+//you can also iterate a path
+vertices = [...vertex.iterPath(['friend', 'brother'])]
+
 //getting a vertex works like setting
 var friendsBotherVertex = vertex.get(['friend', 'brother'])
 friendsBotherVertex.value //"bob"
