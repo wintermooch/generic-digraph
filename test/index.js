@@ -20,6 +20,11 @@ tape('basic', function (t) {
   t.equal(b, undefined, 'should not get a unset value')
   t.equal(graph.isEmpty(), true, 'should report to be empty')
 
+  let graph2 = new DG()
+  graph2.value = Symbol()
+  graph.set('test', graph2)
+  t.equal(graph.get('test').value, graph2.value, 'copy constructor should work')
+
   t.end()
 })
 
@@ -31,6 +36,7 @@ tape('paths', function (t) {
   graph.set(path, value)
   let b = graph.get(path)
   t.equal(b.value, value, 'should set and get vertex on a path')
+  t.equal(graph.delete([Symbol()]), false, 'shouldnot delete non-existing path')
 
   graph.delete(path)
   b = graph.get(path)
