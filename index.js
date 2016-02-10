@@ -16,7 +16,7 @@ const Vertex = module.exports = class Vertex {
 
   /**
    * Create a new vertex
-   * @param {DAG} vertex a vertex to copy or an intial value
+   * @param {Vertex} vertex a vertex to copy or an intial value
    */
   constructor (vertex) {
     this._edges = new Vertex.EdgeMap()
@@ -193,6 +193,7 @@ const Vertex = module.exports = class Vertex {
    * override this to implement a custom delete
    * @param {array} path
    * @return {boolean} whether the delete was succesful
+   * @private
    */
   _delete (path) {
     let name = path.pop()
