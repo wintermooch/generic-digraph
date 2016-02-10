@@ -86,7 +86,7 @@ const Vertex = module.exports = class Vertex {
       nextVertex = new Vertex()
       this.edges.set(name, nextVertex)
     }
-    return nextVertex.set(path, vertex)
+    return nextVertex[SET](path, vertex)
   }
 
   /**
