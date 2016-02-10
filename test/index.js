@@ -11,6 +11,15 @@ tape('basic', function (t) {
   let b = graph.get(key)
   t.equal(b.getValue(), a, 'should add and get vertices')
 
+  a = Symbol()
+  graph.set(key, a)
+  b = graph.get(key)
+  t.equal(b.getValue(), a, 'should overwrite Symbol')
+
+  graph.delete([key, Symbol()])
+  b = graph.get(key)
+  t.equal(b.getValue(), a, 'should not delete a value on a path')
+
   graph.delete(key)
   b = graph.get(key)
   t.equal(b, undefined, 'should delete a value')
@@ -20,10 +29,14 @@ tape('basic', function (t) {
   t.equal(b, undefined, 'should not get a unset value')
   t.equal(graph.isEmpty(), true, 'should report to be empty')
 
-  let graph2 = new DG()
-  graph2.setValue(Symbol())
-  graph.set('test', graph2)
-  t.equal(graph.get('test').getValue(), graph2.getValue(), 'copy constructor should work')
+  graph.setValue('test')
+  graph.setEdge('edge', new DG('test2'))
+  let graph2 = new DG(graph)
+  t.equal(graph.getValue(), graph2.getValue(), 'copy constructor should work')
+  t.equal(graph.getEdge('edge').value, 'test2', 'copy constructor should work')
+
+  graph.deleteEdge('edge')
+  t.equal(graph.getEdge('edge'), undefined, 'delete edge should work')
 
   t.end()
 })
