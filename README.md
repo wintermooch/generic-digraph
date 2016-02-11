@@ -47,7 +47,7 @@ vertex.isEmpty()
 # API
 [./docs/](./docs/index.md)
 
-# Extending
+# EXTENDING
 This was module was built so that it could be easly extended. To see an example look at
 * [functional DAG](https://github.com/wanderer/functional-dag)
 
