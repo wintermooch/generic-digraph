@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * A very generic Directed graph implementation made to be easy to extend
+ * A very generic directed graph implementation made to be easy to extend
  */
 module.exports = class Vertex {
 
@@ -25,7 +25,7 @@ module.exports = class Vertex {
   }
 
   /**
-   * The function used to format all paths used by `set` and `get`
+   * The function used to format paths
    * @param {*} path
    * @return {array}
    */
@@ -48,15 +48,31 @@ module.exports = class Vertex {
   }
 
   /**
-   * Get the vertex's value
+   * Get a vertex's value
+   * @param {array} [path]
    * @return {*}
    */
   getValue (path) {
+    if (arguments.length === 0) {
+      return this._getValue()
+    } else {
+      path = Vertex.formatPath(path)
+      return this._get(path, '_getValue')
+    }
+  }
+
+  /**
+   * Get this vertex's value
+   * @return {*}
+   * @private
+   */
+  _getValue () {
     return this._value
   }
 
   /**
-   * Set the vertex's value
+   * Set a vertex's value
+   * @param {array} [path]
    * @param {*} val
    */
   setValue (path, val) {
@@ -64,13 +80,28 @@ module.exports = class Vertex {
       return this._setValue(path)
     } else {
       path = Vertex.formatPath(path)
-      return this._set(path, val, 'setValue')
+      return this._set(path, val, '_setValue')
     }
   }
 
+  /**
+   * Set this vertex's value
+   * @param {array} [path]
+   * @param {*} val
+   */
   _setValue (val) {
     this._value = val
     return this
+  }
+
+  /**
+   * Gets a vertex from the given path
+   * @param {array} path
+   * @return {DG}
+   */
+  getVertex (path) {
+    path = Vertex.formatPath(path)
+    return this._get(path)
   }
 
   /**
@@ -89,11 +120,16 @@ module.exports = class Vertex {
     }
   }
 
+  /**
+   * Set this vertex
+   * @param {*} vertex
+   */
   _setVertex (vertex) {
     if (!(vertex instanceof Vertex)) {
-      vertex = new Vertex(vertex)
+      this._value = vertex
+    } else {
+      Object.assign(this, vertex)
     }
-    Object.assign(this, vertex)
     return this
   }
 
@@ -121,35 +157,28 @@ module.exports = class Vertex {
   }
 
   /**
-   * Gets a vertex from the given path
-   * @param {array} path
-   * @return {DG}
-   */
-  getVertex (path) {
-    path = Vertex.formatPath(path)
-    return this._get(path)
-  }
-
-  /**
    * override this to implement a custom get
    * @param {array} path
    * @return {DG}
    * @private
    */
-  _get (path) {
-    let name = path.pop()
-
+  _get (path, getFnc) {
     // the last name in the path
     if (!path.length) {
-      return this._edges.get(name)
+      if (getFnc) {
+        return this[getFnc]()
+      } else {
+        return this
+      }
     }
 
+    let name = path.pop()
     let nextVertex = this._edges.get(name)
     if (!nextVertex) {
       return
     }
 
-    return nextVertex.getVertex(path)
+    return nextVertex._get(path, getFnc)
   }
 
   /**
@@ -157,7 +186,7 @@ module.exports = class Vertex {
    * @param {array} path
    * @return {boolean} whether the delete was succesful
    */
-  delVertex (path) {
+  delete (path) {
     path = Vertex.formatPath(path)
     return this._delete(path)
   }
@@ -180,7 +209,7 @@ module.exports = class Vertex {
       return false
     }
 
-    let wasDeleted = nextVertex.delVertex(path)
+    let wasDeleted = nextVertex.delete(path)
     if (nextVertex.isEmpty()) {
       this._edges.delete(name)
     }
@@ -192,7 +221,7 @@ module.exports = class Vertex {
    * @return {boolean}
    */
   isEmpty () {
-    return !this._edges.size && (this._value === null || this._value === undefined)
+    return !this._edges.size && (this._value === undefined || this._value === null)
   }
 
   /**
@@ -218,9 +247,7 @@ module.exports = class Vertex {
    */
   * iterPath (path) {
     path = Vertex.formatPath(path)
-    yield* this._iterPath(path, function (vertex) {
-      return vertex
-    })
+    yield* this._iterPath(path)
   }
 
   /**
@@ -228,15 +255,15 @@ module.exports = class Vertex {
    * @param {array} path
    * @private
    */
-  * _iterPath (path, onVertex) {
+  * _iterPath (path) {
     if (path.length) {
       let name = path.pop()
       let nextVertex = this._edges.get(name)
       // inject something
-      nextVertex = onVertex(nextVertex)
+      // nextVertex = checkFunc(nextVertex)
       if (nextVertex) {
         yield nextVertex
-        yield* nextVertex._iterPath(path, onVertex)
+        yield* nextVertex._iterPath(path)
       }
     }
   }
