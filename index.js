@@ -64,7 +64,7 @@ module.exports = class Vertex {
       return this._setValue(path)
     } else {
       path = Vertex.formatPath(path)
-      return this._set(path, val, true)
+      return this._set(path, val, 'setValue')
     }
   }
 
@@ -80,22 +80,21 @@ module.exports = class Vertex {
    */
   setVertex (path, vertex) {
     if (arguments.length === 1) {
-      vertex = path
-    }
-
-    if (!(vertex instanceof Vertex)) {
-      vertex = new Vertex(vertex)
-    }
-
-    if (arguments.length === 1) {
-      Object.assign(this, vertex)
-      return this
+      return this._setVertex(path)
     } else {
       // only do the path validation here
       path = Vertex.formatPath(path)
       // all the real work is done here
-      return this._set(path, vertex)
+      return this._set(path, vertex, 'setVertex')
     }
+  }
+
+  _setVertex (vertex) {
+    if (!(vertex instanceof Vertex)) {
+      vertex = new Vertex(vertex)
+    }
+    Object.assign(this, vertex)
+    return this
   }
 
   /**
@@ -104,25 +103,20 @@ module.exports = class Vertex {
    * @param {*} vertex
    * @private
    */
-  _set (path, vertex, setVal) {
+  _set (path, vertex, setFnc) {
     // we are at the end of the path
     if (!path.length) {
-      // if we are not setting vertex assume we are setting just the value
-      if (setVal) {
-        return this.setValue(vertex)
-      } else {
-        return this.setVertex(vertex)
-      }
+      return this[setFnc](vertex)
     }
 
     let name = path.pop()
     let nextVertex = this._edges.get(name)
-    // automatical grow the graph if the path enconters missing vertices
+    // automatically grow the graph if the path enconters missing vertices
     if (!nextVertex) {
       nextVertex = new Vertex()
       this._edges.set(name, nextVertex)
     }
-    nextVertex._set(path, vertex, setVal)
+    nextVertex._set(path, vertex, setFnc)
     return
   }
 
@@ -131,7 +125,7 @@ module.exports = class Vertex {
    * @param {array} path
    * @return {DG}
    */
-  get (path) {
+  getVertex (path) {
     path = Vertex.formatPath(path)
     return this._get(path)
   }
@@ -155,7 +149,7 @@ module.exports = class Vertex {
       return
     }
 
-    return nextVertex.get(path)
+    return nextVertex.getVertex(path)
   }
 
   /**
@@ -163,7 +157,7 @@ module.exports = class Vertex {
    * @param {array} path
    * @return {boolean} whether the delete was succesful
    */
-  delete (path) {
+  delVertex (path) {
     path = Vertex.formatPath(path)
     return this._delete(path)
   }
@@ -186,7 +180,7 @@ module.exports = class Vertex {
       return false
     }
 
-    let wasDeleted = nextVertex.delete(path)
+    let wasDeleted = nextVertex.delVertex(path)
     if (nextVertex.isEmpty()) {
       this._edges.delete(name)
     }
@@ -224,7 +218,9 @@ module.exports = class Vertex {
    */
   * iterPath (path) {
     path = Vertex.formatPath(path)
-    yield* this._iterPath(path)
+    yield* this._iterPath(path, function (vertex) {
+      return vertex
+    })
   }
 
   /**
@@ -232,12 +228,16 @@ module.exports = class Vertex {
    * @param {array} path
    * @private
    */
-  * _iterPath (path) {
-    let name = path.pop()
-    let nextVertex = this._edges.get(name)
-    if (nextVertex) {
-      yield nextVertex
-      yield* nextVertex._iterPath(path)
+  * _iterPath (path, onVertex) {
+    if (path.length) {
+      let name = path.pop()
+      let nextVertex = this._edges.get(name)
+      // inject something
+      nextVertex = onVertex(nextVertex)
+      if (nextVertex) {
+        yield nextVertex
+        yield* nextVertex._iterPath(path, onVertex)
+      }
     }
   }
 
