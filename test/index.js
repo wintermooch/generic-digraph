@@ -8,6 +8,7 @@ tape('basic', function (t) {
   let key = Symbol()
 
   graph.set(key, a)
+  graph.set([key, key], Symbol())
   let b = graph.get(key)
   t.equal(b.getValue(), a, 'should add and get vertices')
 
@@ -30,13 +31,13 @@ tape('basic', function (t) {
   t.equal(graph.isEmpty(), true, 'should report to be empty')
 
   graph.setValue('test')
-  graph.setEdge('edge', new DG('test2'))
+  graph.set('edge', new DG('test2'))
   let graph2 = new DG(graph)
   t.equal(graph.getValue(), graph2.getValue(), 'copy constructor should work')
-  t.equal(graph.getEdge('edge').value, 'test2', 'copy constructor should work')
+  t.equal(graph.get('edge').value, 'test2', 'copy constructor should work')
 
-  graph.deleteEdge('edge')
-  t.equal(graph.getEdge('edge'), undefined, 'delete edge should work')
+  graph.delete('edge')
+  t.equal(graph.get('edge'), undefined, 'delete edge should work')
 
   t.end()
 })

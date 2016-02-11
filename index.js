@@ -1,43 +1,27 @@
 'use strict'
-// Just a map that forces each element to be a Vertex
-class EdgeMap extends Map {
-  set (name, vertex) {
-    if (!(vertex instanceof Vertex)) {
-      vertex = new Vertex(vertex)
-    }
-    return super.set(name, vertex)
-  }
-}
 
 /**
  * A very generic Directed graph implementation made to be easy to extend
  */
-const Vertex = module.exports = class Vertex {
+module.exports = class Vertex {
 
   /**
    * Create a new vertex
    * @param {Vertex} vertex a vertex to copy or an intial value
    */
   constructor (vertex) {
-    this._edges = new Vertex.EdgeMap()
+    this._edges = new Map()
     this._value = null
 
     if (vertex) {
       // copy constructor
       if (vertex instanceof Vertex) {
         this._value = vertex._value
-        this._edges = new Vertex.EdgeMap(vertex._edges)
+        this._edges = new Map(vertex._edges)
       } else {
         this._value = vertex
       }
     }
-  }
-
-  /**
-   * @property {EdgeMap} EdgeMap exposes the Map used for storing edges
-   */
-  static get EdgeMap () {
-    return EdgeMap
   }
 
   /**
@@ -57,35 +41,8 @@ const Vertex = module.exports = class Vertex {
   }
 
   /**
-   * Set an edge to a given value
-   * @param {*} name
-   * @param {*} value
-   */
-  setEdge (name, value) {
-    return this._edges.set(name, value)
-  }
-
-  /**
-   * Get an edge's vertex
-   * @param {*} name
-   * @return {Vertex}
-   */
-  getEdge (name) {
-    return this._edges.get(name)
-  }
-
-  /**
-   * Delete an edge
-   * @param {*} name
-   */
-  deleteEdge (name) {
-    return this._edges.delete(name)
-  }
-
-  /**
    * @property {*} value the value of the vertex
    */
-
   get value () {
     return this._value
   }
@@ -102,9 +59,15 @@ const Vertex = module.exports = class Vertex {
    * Set the vertex's value
    * @param {*} val
    */
-  setValue (val) {
-    this._value = val
-    return this
+  setValue (path, val) {
+    if (!val) {
+      val = path
+      this._value = val
+      return this
+    } else {
+      path = Vertex.formatPath(path)
+      this._set(path, val, true)
+    }
   }
 
   /**
@@ -113,9 +76,12 @@ const Vertex = module.exports = class Vertex {
    * @param {*} vertex
    */
   set (path, vertex) {
+    if (!(vertex instanceof Vertex)) {
+      vertex = new Vertex(vertex)
+    }
     // only do the path validation here
     path = Vertex.formatPath(path)
-    //  all ther really work is done here
+    // all the real work is done here
     return this._set(path, vertex)
   }
 
@@ -125,12 +91,12 @@ const Vertex = module.exports = class Vertex {
    * @param {*} vertex
    * @private
    */
-  _set (path, vertex) {
+  _set (path, vertex, setVal) {
     let name = path.pop()
     // we are at the end of the path
     if (!path.length) {
       // if we are not setting vertex assume we are setting just the value
-      if (!(vertex instanceof Vertex) && this._edges.has(name)) {
+      if (setVal && this._edges.has(name)) {
         let old = this._edges.get(name)
         old._value = vertex
         return old
