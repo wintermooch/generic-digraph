@@ -5,7 +5,7 @@
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)  
 
-This is a generic directional graph implementation
+This is a generic directional graph implementation.
 
 # USAGE
 
@@ -15,16 +15,15 @@ const Digraph = require('generic-digraph')
 // to start with the graph is just a single vertex
 var vertex = new Digraph()
 
-// now lets add an edge to the vertex named "bob" that points to another vertex with the value "alice"
-vertex.set('friend', 'alice')
+// now lets add an edge named 'friend' to the vertex with the value 'alice'
+vertex.setVertex('friend', 'alice')
 
-// if paths have more than one name in them they can arrays
-vertex.set(['friend', 'brother'], 'bob')
+vertex.setVertex(['friend', 'brother'], 'bob')
 //now the graph looks like:
 // [vertex]---friend--->[alice]---brother-->[bob]
 
 //path names and vertex values can be anything
-vertex.set([new Buffer('friend'), 5, false, {}, new Date()], Array())
+vertex.setVertex([new Buffer('friend'), 5, false, {}, new Date()], Array())
 
 // edges are stored in a Map
 vertex.edges // Map{}
@@ -36,8 +35,8 @@ var vertices = [...vertex]
 vertices = [...vertex.iterPath(['friend', 'brother'])]
 
 //getting a vertex works like setting
-var friendsBotherVertex = vertex.get(['friend', 'brother'])
-friendsBotherVertex.value //"bob"
+var friendsBotherVertex = vertex.setVertex(['friend', 'brother'])
+friendsBotherVertex.getValue() //"bob"
 
 // delete an edge
 vertex.delete('friend')
@@ -47,6 +46,10 @@ vertex.isEmpty()
 
 # API
 [./docs/](./docs/index.md)
+
+# Extending
+This was module was built so that it could be easly extended. To see an example look at
+* [functional DAG](https://github.com/wanderer/functional-dag)
 
 # LICENSE
 [MPL-2.0](https://tldrlegal.com/license/mozilla-public-license-2.0-(mpl-2))
