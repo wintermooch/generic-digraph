@@ -88,6 +88,7 @@ module.exports = class Vertex {
    * Set this vertex's value
    * @param {array} [path]
    * @param {*} val
+   * @private
    */
   _setValue (val) {
     this._value = val
@@ -123,6 +124,7 @@ module.exports = class Vertex {
   /**
    * Set this vertex
    * @param {*} vertex
+   * @private
    */
   _setVertex (vertex) {
     if (!(vertex instanceof Vertex)) {
