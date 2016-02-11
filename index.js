@@ -51,7 +51,7 @@ module.exports = class Vertex {
    * Get the vertex's value
    * @return {*}
    */
-  getValue () {
+  getValue (path) {
     return this._value
   }
 
@@ -60,29 +60,42 @@ module.exports = class Vertex {
    * @param {*} val
    */
   setValue (path, val) {
-    if (!val) {
-      val = path
-      this._value = val
-      return this
+    if (arguments.length === 1) {
+      return this._setValue(path)
     } else {
       path = Vertex.formatPath(path)
-      this._set(path, val, true)
+      return this._set(path, val, true)
     }
   }
 
+  _setValue (val) {
+    this._value = val
+    return this
+  }
+
   /**
-   * Set a path to a vertex or value
+   * Set a path to a vertex
    * @param {array} path
    * @param {*} vertex
    */
-  set (path, vertex) {
+  setVertex (path, vertex) {
+    if (arguments.length === 1) {
+      vertex = path
+    }
+
     if (!(vertex instanceof Vertex)) {
       vertex = new Vertex(vertex)
     }
-    // only do the path validation here
-    path = Vertex.formatPath(path)
-    // all the real work is done here
-    return this._set(path, vertex)
+
+    if (arguments.length === 1) {
+      Object.assign(this, vertex)
+      return this
+    } else {
+      // only do the path validation here
+      path = Vertex.formatPath(path)
+      // all the real work is done here
+      return this._set(path, vertex)
+    }
   }
 
   /**
@@ -92,25 +105,25 @@ module.exports = class Vertex {
    * @private
    */
   _set (path, vertex, setVal) {
-    let name = path.pop()
     // we are at the end of the path
     if (!path.length) {
       // if we are not setting vertex assume we are setting just the value
-      if (setVal && this._edges.has(name)) {
-        let old = this._edges.get(name)
-        old._value = vertex
-        return old
+      if (setVal) {
+        return this.setValue(vertex)
+      } else {
+        return this.setVertex(vertex)
       }
-      return this.edges.set(name, vertex)
     }
 
+    let name = path.pop()
     let nextVertex = this._edges.get(name)
     // automatical grow the graph if the path enconters missing vertices
     if (!nextVertex) {
       nextVertex = new Vertex()
       this._edges.set(name, nextVertex)
     }
-    return nextVertex._set(path, vertex)
+    nextVertex._set(path, vertex, setVal)
+    return
   }
 
   /**

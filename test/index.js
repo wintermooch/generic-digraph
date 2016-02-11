@@ -7,13 +7,13 @@ tape('basic', function (t) {
   let a = Symbol()
   let key = Symbol()
 
-  graph.set(key, a)
-  graph.set([key, key], Symbol())
+  graph.setVertex(key, a)
+  graph.setVertex([key, key], Symbol())
   let b = graph.get(key)
   t.equal(b.getValue(), a, 'should add and get vertices')
 
   a = Symbol()
-  graph.set(key, a)
+  graph.setVertex(key, a)
   b = graph.get(key)
   t.equal(b.getValue(), a, 'should overwrite Symbol')
 
@@ -31,7 +31,7 @@ tape('basic', function (t) {
   t.equal(graph.isEmpty(), true, 'should report to be empty')
 
   graph.setValue('test')
-  graph.set('edge', new DG('test2'))
+  graph.setVertex('edge', new DG('test2'))
   let graph2 = new DG(graph)
   t.equal(graph.getValue(), graph2.getValue(), 'copy constructor should work')
   t.equal(graph.get('edge').value, 'test2', 'copy constructor should work')
@@ -47,7 +47,7 @@ tape('paths', function (t) {
   let path = Array(100).fill(Symbol())
   let value = Symbol()
 
-  graph.set(path, value)
+  graph.setVertex(path, value)
   let b = graph.get(path)
   t.equal(b.getValue(), value, 'should set and get vertex on a path')
   t.equal(graph.delete([Symbol()]), false, 'shouldnot delete non-existing path')
@@ -65,7 +65,7 @@ tape('iterators', function (t) {
   let path = Array(100).fill(Symbol())
   let value = Symbol()
 
-  graph.set(path, value)
+  graph.setVertex(path, value)
   let foundPath = [...graph.iterPath(path)]
   t.equal(foundPath.length, 100, 'the iterator should return all the vertices on the path')
   t.equal(foundPath[99].getValue(), value)
@@ -73,7 +73,7 @@ tape('iterators', function (t) {
   // add another path to the graph
   path = Array(100).fill(Symbol())
   value = Symbol()
-  graph.set(path, value)
+  graph.setVertex(path, value)
 
   let vertices = [...graph]
   t.equal(vertices.length, 201, 'the iterator should return all the vertices')
