@@ -205,7 +205,7 @@ module.exports = class Vertex {
 
     if (!path.length) {
       return this._edges.delete(name)
-    }else if (!nextVertex) {
+    } else if (!nextVertex) {
       return false
     } else {
       let wasDeleted = nextVertex._delete(path)
