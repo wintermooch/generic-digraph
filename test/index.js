@@ -45,6 +45,9 @@ tape('basic', function (t) {
   t.equal(graph.getValue(), graph2.getValue(), 'copy constructor should work')
   t.equal(graph.getVertex('edge').value, 'test2', 'copy constructor should work')
 
+  let edges = graph.edges
+  t.equal(edges.size, 2, 'edges getter should work')
+
   t.end()
 })
 
@@ -57,6 +60,12 @@ tape('paths', function (t) {
   let b = graph.getVertex(path)
   t.equal(b.getValue(), value, 'should set and get vertex on a path')
   t.equal(graph.delete([Symbol()]), false, 'shouldnot delete non-existing path')
+
+  path.push(Symbol())
+  path.push(Symbol())
+  t.equal(graph.delete(path), false, 'shouldnot delete non-existing path')
+  path.pop()
+  path.pop()
 
   graph.delete(path)
   b = graph.getVertex(path)

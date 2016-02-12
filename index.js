@@ -147,7 +147,7 @@ module.exports = class Vertex {
       return this[setFnc](vertex)
     }
 
-    let name = path.pop()
+    let name = path.shift()
     let nextVertex = this._edges.get(name)
     // automatically grow the graph if the path enconters missing vertices
     if (!nextVertex) {
@@ -174,7 +174,7 @@ module.exports = class Vertex {
       }
     }
 
-    let name = path.pop()
+    let name = path.shift()
     let nextVertex = this._edges.get(name)
     if (!nextVertex) {
       return
@@ -200,18 +200,18 @@ module.exports = class Vertex {
    * @private
    */
   _delete (path) {
-    let name = path.pop()
+    let name = path.shift()
 
     if (!path.length) {
       return this._edges.delete(name)
     }
 
-    let nextVertex = this.edges.get(name)
+    let nextVertex = this._edges.get(name)
     if (!nextVertex) {
       return false
     }
 
-    let wasDeleted = nextVertex.delete(path)
+    let wasDeleted = nextVertex._delete(path)
     if (nextVertex.isEmpty()) {
       this._edges.delete(name)
     }
@@ -259,7 +259,7 @@ module.exports = class Vertex {
    */
   * _iterPath (path) {
     if (path.length) {
-      let name = path.pop()
+      let name = path.shift()
       let nextVertex = this._edges.get(name)
       // inject something
       // nextVertex = checkFunc(nextVertex)
