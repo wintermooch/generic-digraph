@@ -172,15 +172,15 @@ module.exports = class Vertex {
       } else {
         return this
       }
+    } else {
+      let name = path.shift()
+      let nextVertex = this._edges.get(name)
+      if (!nextVertex) {
+        return
+      } else {
+        return nextVertex._get(path, getFnc)
+      }
     }
-
-    let name = path.shift()
-    let nextVertex = this._edges.get(name)
-    if (!nextVertex) {
-      return
-    }
-
-    return nextVertex._get(path, getFnc)
   }
 
   /**
@@ -201,21 +201,19 @@ module.exports = class Vertex {
    */
   _delete (path) {
     let name = path.shift()
+    let nextVertex = this._edges.get(name)
 
     if (!path.length) {
       return this._edges.delete(name)
-    }
-
-    let nextVertex = this._edges.get(name)
-    if (!nextVertex) {
+    }else if (!nextVertex) {
       return false
+    } else {
+      let wasDeleted = nextVertex._delete(path)
+      if (nextVertex.isEmpty()) {
+        this._edges.delete(name)
+      }
+      return wasDeleted
     }
-
-    let wasDeleted = nextVertex._delete(path)
-    if (nextVertex.isEmpty()) {
-      this._edges.delete(name)
-    }
-    return wasDeleted
   }
 
   /**
