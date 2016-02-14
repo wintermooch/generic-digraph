@@ -226,17 +226,24 @@ module.exports = class Vertex {
 
   /**
    * Does a depth first iteration of the graph
+   * @param {array} [path] a path to start iterating from
    */
-  * [Symbol.iterator] (vistedVertices) {
-    if (!vistedVertices) {
-      vistedVertices = new WeakSet()
-    }
+  * [Symbol.iterator] () {
+    yield* this._iterator([], new WeakSet())
+  }
 
+  /**
+   * override this to implement a custom iterator
+   * @param {array} path
+   * @private
+   */
+  * _iterator (path, vistedVertices) {
     if (!vistedVertices.has(this)) {
       vistedVertices.add(this)
-      yield this
+      yield [path, this]
       for (let edge of this._edges) {
-        yield* edge[1][Symbol.iterator](vistedVertices)
+        let nextPath = path.concat(edge[0])
+        yield* edge[1]._iterator(nextPath, vistedVertices)
       }
     }
   }
