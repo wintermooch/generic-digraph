@@ -151,7 +151,7 @@ module.exports = class Vertex {
     let nextVertex = this._edges.get(name)
     // automatically grow the graph if the path enconters missing vertices
     if (!nextVertex) {
-      nextVertex = new Vertex()
+      nextVertex = new this.constructor()
       this._edges.set(name, nextVertex)
     }
     nextVertex._set(path, vertex, setFnc)
