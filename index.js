@@ -10,18 +10,25 @@ module.exports = class Vertex {
    * @param {Vertex} vertex a vertex to copy or an intial value
    */
   constructor (vertex) {
-    this._edges = new Map()
+    this._edges = this.constructor.Edges()
     this._value = null
 
     if (vertex) {
       // copy constructor
       if (vertex instanceof Vertex) {
         this._value = vertex._value
-        this._edges = new Map(vertex._edges)
+        this._edges = this.constructor.Edges(vertex._edges)
+      } else if (typeof vertex === 'object') {
+        this._value = vertex.value
+        this._edges = vertex.edges || this._edges
       } else {
         this._value = vertex
       }
     }
+  }
+
+  static Edges (edges) {
+    return new Map(edges)
   }
 
   /**
