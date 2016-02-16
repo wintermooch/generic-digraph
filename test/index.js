@@ -40,8 +40,14 @@ tape('basic', function (t) {
   t.equal(graph.isEmpty(), false, 'delete should not affect connected vertices')
 
   graph.setValue('test')
-  graph.setVertex('edge', new DG('test2'))
+  graph.setVertex('edge', new DG({value: 'test2'}))
   let graph2 = new DG(graph)
+  t.equal(graph.getValue(), graph2.getValue(), 'copy constructor should work')
+  t.equal(graph.getVertex('edge').value, 'test2', 'copy constructor should work')
+
+  graph.setValue('test')
+  graph.setVertex('edge', new DG('test2'))
+  graph2 = new DG(graph)
   t.equal(graph.getValue(), graph2.getValue(), 'copy constructor should work')
   t.equal(graph.getVertex('edge').value, 'test2', 'copy constructor should work')
 
