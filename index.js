@@ -107,24 +107,24 @@ module.exports = class Vertex {
    * @param {array} path
    * @return {DG}
    */
-  getVertex (path) {
+  getEdge (path) {
     path = Vertex.formatPath(path)
     return this._get(path)
   }
 
   /**
-   * Set a path to a vertex
+   * Set an edge(s) on a given path to the givin vertex
    * @param {array} path
    * @param {*} vertex
    */
-  setVertex (path, vertex) {
+  setEdge (path, vertex) {
     if (arguments.length === 1) {
-      return this._setVertex(path)
+      return this._setEdge(path)
     } else {
       // only do the path validation here
       path = Vertex.formatPath(path)
       // all the real work is done here
-      return this._set(path, vertex, 'setVertex')
+      return this._set(path, vertex, 'setEdge')
     }
   }
 
@@ -133,7 +133,7 @@ module.exports = class Vertex {
    * @param {*} vertex
    * @private
    */
-  _setVertex (vertex) {
+  _setEdge (vertex) {
     if (!(vertex instanceof Vertex)) {
       this._value = vertex
     } else {
@@ -191,11 +191,11 @@ module.exports = class Vertex {
   }
 
   /**
-   * deletes a vertex at given path
+   * deletes an Edge at a given path
    * @param {array} path
    * @return {boolean} whether the delete was succesful
    */
-  delete (path) {
+  delEdge (path) {
     path = Vertex.formatPath(path)
     return this._delete(path)
   }
