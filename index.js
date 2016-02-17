@@ -20,7 +20,7 @@ module.exports = class Vertex {
         this._edges = this.constructor.Edges(vertex._edges)
       } else if (typeof vertex === 'object') {
         this._value = vertex.value
-        this._edges = vertex.edges || this._edges
+        this._edges = this.constructor.Edges(vertex.edges)
       } else {
         this._value = vertex
       }
