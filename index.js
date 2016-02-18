@@ -87,7 +87,8 @@ module.exports = class Vertex {
       return this._setValue(path)
     } else {
       path = Vertex.formatPath(path)
-      return this._set(path, val, '_setValue')
+      path.push(val)
+      return this._set(path, null, '_setValue')
     }
   }
 
@@ -118,13 +119,16 @@ module.exports = class Vertex {
    * @param {*} vertex
    */
   setEdge (path, vertex) {
-    if (arguments.length === 1) {
-      return this._setEdge(path)
+    // only do the path and vertex validation here
+    if (!(vertex instanceof Vertex)) {
+      vertex = new Vertex(vertex)
+    }
+    path = Vertex.formatPath(path)
+    if (path.length === 1) {
+      return this._setEdge(path[0], vertex)
     } else {
-      // only do the path validation here
-      path = Vertex.formatPath(path)
       // all the real work is done here
-      return this._set(path, vertex, 'setEdge')
+      return this._set(path, vertex, '_setEdge')
     }
   }
 
@@ -133,13 +137,8 @@ module.exports = class Vertex {
    * @param {*} vertex
    * @private
    */
-  _setEdge (vertex) {
-    if (!(vertex instanceof Vertex)) {
-      this._value = vertex
-    } else {
-      Object.assign(this, vertex)
-    }
-    return this
+  _setEdge (edge, vertex) {
+    this._edges.set(edge, vertex)
   }
 
   /**
@@ -148,20 +147,20 @@ module.exports = class Vertex {
    * @param {*} vertex
    * @private
    */
-  _set (path, vertex, setFnc) {
+  _set (path, payload, setFnc) {
+    let name = path.shift()
     // we are at the end of the path
     if (!path.length) {
-      return this[setFnc](vertex)
+      return this[setFnc](name, payload)
     }
 
-    let name = path.shift()
     let nextVertex = this._edges.get(name)
     // automatically grow the graph if the path enconters missing vertices
     if (!nextVertex) {
       nextVertex = new this.constructor()
       this._edges.set(name, nextVertex)
     }
-    nextVertex._set(path, vertex, setFnc)
+    nextVertex._set(path, payload, setFnc)
     return
   }
 
@@ -235,22 +234,41 @@ module.exports = class Vertex {
    * Does a depth first iteration of the graph
    * @param {array} [path] a path to start iterating from
    */
-  * [Symbol.iterator] () {
-    yield* this._iterator([], new WeakSet())
-  }
-
-  /**
-   * override this to implement a custom iterator
-   * @param {array} path
-   * @private
-   */
-  * _iterator (path, vistedVertices) {
+  * [Symbol.iterator] (path, vistedVertices) {
+    if (!path) {
+      path = []
+    }
+    if (!vistedVertices) {
+      vistedVertices = new WeakSet()
+    }
     if (!vistedVertices.has(this)) {
       vistedVertices.add(this)
       yield [path, this]
       for (let edge of this._edges) {
         let nextPath = path.concat(edge[0])
-        yield* edge[1]._iterator(nextPath, vistedVertices)
+        yield* edge[1][Symbol.iterator](nextPath, vistedVertices)
+      }
+    }
+  }
+
+  /**
+   * iterates all the acyclic path possibilties from the current vertex to a given vertex
+   * @param {array} path
+   */
+  * findPaths (vertex, path, vistedVertices) {
+    if (!path) {
+      path = []
+    }
+    if (!vistedVertices) {
+      vistedVertices = new WeakSet()
+    }
+    if (this === vertex) {
+      yield path
+    } else if (!vistedVertices.has(this)) {
+      vistedVertices.add(this)
+      for (let edge of this._edges) {
+        let nextPath = path.concat(edge[0])
+        yield* edge[1].findPaths(vertex, nextPath, vistedVertices)
       }
     }
   }

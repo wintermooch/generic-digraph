@@ -4,10 +4,11 @@ const DG = require('../')
 
 tape('basic', function (t) {
   let graph = new DG()
-  let a = Symbol()
-  let key = Symbol()
+  let a = Symbol('a value')
+  let key = Symbol('key')
 
   graph.setEdge(key, a)
+  console.log(graph)
   let c = Symbol()
   let b = graph.getEdge(key)
   t.equal(b.getValue(), a, 'should add and get vertices')
@@ -104,7 +105,28 @@ tape('iterators', function (t) {
 
   graph.setEdge(path, graph)
   vertices = [...graph]
-  t.equal(vertices.length, 201, 'the iterator should not revisit vertices')
+  t.equal(vertices.length, 200, 'the iterator should not revisit vertices')
+
+  t.end()
+})
+
+tape('iterators - findPaths', function (t) {
+  let graph = new DG()
+  let pathA = Array(2).fill(Symbol('A'))
+  let pathB = Array(2).fill(Symbol('B'))
+  let pathC = Array(2).fill(Symbol('C'))
+  let vertexToFind = new DG('find me!')
+
+  graph.setEdge(pathA, vertexToFind)
+  graph.setEdge(pathB, vertexToFind)
+  graph.setEdge(pathC, vertexToFind)
+
+  let foundPaths = [...graph.findPaths(vertexToFind)]
+  t.equal(foundPaths.length, 3, 'should find the correct number of paths')
+
+  graph.setEdge(pathA, graph)
+  foundPaths = [...graph.findPaths(vertexToFind)]
+  t.equal(foundPaths.length, 2, 'shouldnt get traped in cycles')
 
   t.end()
 })
