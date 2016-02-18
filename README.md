@@ -5,7 +5,7 @@
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)  
 
-This is a generic directional graph implementation.
+This is a generic directional graph implementation that makes use of ES6 iterators for graph traversal.
 
 # USAGE
 
