@@ -121,7 +121,7 @@ module.exports = class Vertex {
   setEdge (path, vertex) {
     // only do the path and vertex validation here
     if (!(vertex instanceof Vertex)) {
-      vertex = new Vertex(vertex)
+      vertex = new this.constructor(vertex)
     }
     path = Vertex.formatPath(path)
     if (path.length === 1) {
@@ -152,16 +152,16 @@ module.exports = class Vertex {
     // we are at the end of the path
     if (!path.length) {
       return this[setFnc](name, payload)
+    } else {
+      let nextVertex = this._edges.get(name)
+      // automatically grow the graph if the path enconters missing vertices
+      if (!nextVertex) {
+        nextVertex = new this.constructor()
+        this._edges.set(name, nextVertex)
+      }
+      nextVertex._set(path, payload, setFnc)
+      return
     }
-
-    let nextVertex = this._edges.get(name)
-    // automatically grow the graph if the path enconters missing vertices
-    if (!nextVertex) {
-      nextVertex = new this.constructor()
-      this._edges.set(name, nextVertex)
-    }
-    nextVertex._set(path, payload, setFnc)
-    return
   }
 
   /**
@@ -253,7 +253,7 @@ module.exports = class Vertex {
 
   /**
    * iterates all the acyclic path possibilties from the current vertex to a given vertex
-   * @param {array} path
+   * @param {vertex} vertex
    */
   * findPaths (vertex, path, vistedVertices) {
     if (!path) {
