@@ -8,7 +8,6 @@ tape('basic', function (t) {
   let key = Symbol('key')
 
   graph.setEdge(key, a)
-  console.log(graph)
   let c = Symbol()
   let b = graph.getEdge(key)
   t.equal(b.getValue(), a, 'should add and get vertices')
@@ -36,6 +35,7 @@ tape('basic', function (t) {
   t.equal(graph.isEmpty(), true, 'should report to be empty')
 
   graph.setValue([key, key], c)
+
   graph.setValue([key], c)
   b = graph.delEdge([key, key])
   t.equal(graph.isEmpty(), false, 'delete should not affect connected vertices')
@@ -55,6 +55,9 @@ tape('basic', function (t) {
   let edges = graph.edges
   t.equal(edges.size, 2, 'edges getter should work')
 
+  graph.setEdge(['a', 'b', 'c'], {test: {object: 'with value'}})
+  console.log('to string should work')
+  console.log(graph.toString())
   t.end()
 })
 

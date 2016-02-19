@@ -18,7 +18,7 @@ module.exports = class Vertex {
       if (vertex instanceof Vertex) {
         this._value = vertex._value
         this._edges = this.constructor.Edges(vertex._edges)
-      } else if (typeof vertex === 'object') {
+      } else if (vertex.value || vertex.edges) {
         this._value = vertex.value
         this._edges = this.constructor.Edges(vertex.edges)
       } else {
@@ -232,7 +232,6 @@ module.exports = class Vertex {
 
   /**
    * Does a depth first iteration of the graph
-   * @param {array} [path] a path to start iterating from
    */
   * [Symbol.iterator] (path, vistedVertices) {
     if (!path) {
@@ -296,6 +295,31 @@ module.exports = class Vertex {
       if (nextVertex) {
         yield nextVertex
         yield* nextVertex._iterPath(path)
+      }
+    }
+  }
+
+  toString () {
+    let string = `root`
+    for (let vert of this) {
+      string += `${pathToString(vert[0])} ${toString(vert[1].value)}
+  `
+    }
+    return string
+    function pathToString (path) {
+      let string = ''
+      for (let name of path) {
+        string += toString(name)
+        string += ' -> '
+      }
+      return string
+    }
+
+    function toString (value) {
+      if (typeof value === 'symbol') {
+        return String(value)
+      } else {
+        return JSON.stringify(value)
       }
     }
   }
