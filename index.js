@@ -41,6 +41,14 @@ module.exports = class Vertex {
   }
 
   /**
+   * Produces a copy of this vertex
+   * @return {vertex}
+   */
+  copy (vertex) {
+    return new this.constructor(this)
+  }
+
+  /**
    * @property {map} edges a map of edges that the vertex has
    */
   get edges () {
@@ -301,9 +309,11 @@ module.exports = class Vertex {
 
   toString () {
     let string = `root`
+    // string += ' Edges ' + this.edges.size
     for (let vert of this) {
-      string += `${pathToString(vert[0])} ${toString(vert[1].value)}
-  `
+      string += `${pathToString(vert[0])} ${toString(vert[1].value)}`
+      string += ' | Edges ' + vert[1].edges.size
+      string += '\n'
     }
     return string
     function pathToString (path) {

@@ -55,7 +55,12 @@ tape('basic', function (t) {
   let edges = graph.edges
   t.equal(edges.size, 2, 'edges getter should work')
 
-  graph.setEdge(['a', 'b', 'c'], {test: {object: 'with value'}})
+  let path = ['a', 'b', 'c']
+  graph.setEdge(path, {test: {object: 'with value'}})
+  let copy = graph.copy()
+  t.notEqual(copy, graph, 'copy should work')
+  t.equal(copy.getEdge(path), graph.getEdge(path), 'copy should work')
+
   console.log('to string should work')
   console.log(graph.toString())
   t.end()
