@@ -235,8 +235,21 @@ module.exports = class Vertex {
    * @param {vertex}
    * @return {boolean} whether the delete was succesful
    */
-  // delVertex () {
-  // }
+  delVertex (vertex) {
+    if (vertex === this) {
+      return false
+    }
+
+    let wasDeleted = false
+    for (let currentVert of this.iterateEdges()) {
+      let parent = currentVert[2]
+      let name = currentVert[0]
+      if (currentVert[1] === vertex) {
+        wasDeleted = parent._edges.delete(name)
+      }
+    }
+    return wasDeleted
+  }
 
   /**
    * Returns truthy on whether the vertexs is empty
@@ -249,7 +262,8 @@ module.exports = class Vertex {
   /**
    * Does a depth first iteration of the graph
    */
-  * [Symbol.iterator] (path, vistedVertices) {
+  * [Symbol.iterator] (path, parent, vistedVertices) {
+    // defaults
     if (!path) {
       path = []
     }
@@ -258,11 +272,50 @@ module.exports = class Vertex {
     }
     if (!vistedVertices.has(this)) {
       vistedVertices.add(this)
-      yield [path, this]
+      yield [path, this, parent]
       for (let edge of this._edges) {
         let nextPath = path.concat(edge[0])
-        yield* edge[1][Symbol.iterator](nextPath, vistedVertices)
+        yield* edge[1][Symbol.iterator](nextPath, this, vistedVertices)
       }
+    }
+    // yield [[], this]
+    // // let path = []
+    // // for (let edge of this.iterateEdges()) {
+    // //   if(!edge.visted){
+    // //     path.push(edge.name)
+    // //     yield 
+    // //   }
+    // // }
+    // function onVertex () {
+    
+    // }
+    // function* yieldFn (){
+    //   yield null 
+    // }
+    // yield* this.iterateEdges () 
+  }
+
+  /**
+   * Does a depth first iteration of all the edges in the graph.
+   * @yields {array} - an array in the format of `[edgeName, vertex, parentVertex]`
+   */
+  * iterateEdges (name, parent, vistedVertices) {
+    // defaults
+    if (!vistedVertices) {
+      vistedVertices = new WeakSet()
+    }
+
+    let vistedVertex = false
+    if (!vistedVertices.has(this)) {
+      vistedVertex = true
+      vistedVertices.add(this)
+      for (let edge of this._edges) {
+        yield* edge[1].iterateEdges(edge[0], this, vistedVertices)
+      }
+    }
+
+    if (name) {
+      yield [name, this, parent, vistedVertex]
     }
   }
 
@@ -286,8 +339,6 @@ module.exports = class Vertex {
       yield path
       return [path]
     } else if (foundPaths.has(this)) {
-      // console.log('here');
-      // yield path.concat(foundPaths.get(this))
       for (let foundPath in foundPaths.get(this)) {
         yield path.concat(foundPath)
       }
@@ -302,7 +353,6 @@ module.exports = class Vertex {
         }
       }
       if (paths.length) {
-        // console.log(JSON.stringify(paths));
         foundPaths.set(this, paths)
         return paths
       }

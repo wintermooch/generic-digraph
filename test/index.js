@@ -150,3 +150,19 @@ tape('iterators - findPaths', function (t) {
   t.end()
 })
 
+tape('delete vertex', function (t) {
+  let graph = new DG()
+  let pathA = Array(2).fill(Symbol('A'))
+  let pathB = Array(2).fill(Symbol('B'))
+  let pathC = Array(2).fill(Symbol('C'))
+  let vertexToDelete = new DG('delete me!')
+
+  graph.setEdge(pathA, vertexToDelete)
+  graph.setEdge(pathB, vertexToDelete)
+  graph.setEdge(pathC, vertexToDelete)
+  let deleted = graph.delVertex(vertexToDelete)
+  t.equal(deleted, true)
+  t.equal([...graph].length, 4, 'should delete vertex')
+  t.end()
+})
+
