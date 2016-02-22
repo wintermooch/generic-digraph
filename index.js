@@ -231,6 +231,14 @@ module.exports = class Vertex {
   }
 
   /**
+   * Disconnects the given vertex from the graph
+   * @param {vertex}
+   * @return {boolean} whether the delete was succesful
+   */
+  // delVertex () {
+  // }
+
+  /**
    * Returns truthy on whether the vertexs is empty
    * @return {boolean}
    */
@@ -262,20 +270,41 @@ module.exports = class Vertex {
    * iterates all the acyclic path possibilties from the current vertex to a given vertex
    * @param {vertex} vertex
    */
-  * findPaths (vertex, path, vistedVertices) {
+  * findPaths (vertex, path, vistedVertices, foundPaths) {
+    // defaults
     if (!path) {
       path = []
     }
     if (!vistedVertices) {
       vistedVertices = new WeakSet()
     }
+    if (!foundPaths) {
+      foundPaths = new Map()
+    }
+
     if (this === vertex) {
       yield path
+      return [path]
+    } else if (foundPaths.has(this)) {
+      // console.log('here');
+      // yield path.concat(foundPaths.get(this))
+      for (let foundPath in foundPaths.get(this)) {
+        yield path.concat(foundPath)
+      }
     } else if (!vistedVertices.has(this)) {
       vistedVertices.add(this)
+      let paths = []
       for (let edge of this._edges) {
         let nextPath = path.concat(edge[0])
-        yield* edge[1].findPaths(vertex, nextPath, vistedVertices)
+        let result = yield* edge[1].findPaths(vertex, nextPath, vistedVertices, foundPaths)
+        if (result) {
+          paths.push(path.concat(edge[0]))
+        }
+      }
+      if (paths.length) {
+        // console.log(JSON.stringify(paths));
+        foundPaths.set(this, paths)
+        return paths
       }
     }
   }

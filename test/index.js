@@ -136,6 +136,17 @@ tape('iterators - findPaths', function (t) {
   foundPaths = [...graph.findPaths(vertexToFind)]
   t.equal(foundPaths.length, 2, 'shouldnt get traped in cycles')
 
+  pathA = ['a', 'b']
+  pathC = ['a', 'b', 'c']
+  pathB = ['a^', 'b^']
+  let commonVertex = new DG('common')
+  graph.setEdge(pathA, commonVertex)
+  graph.setEdge(pathB, commonVertex)
+  let lastVert = new DG('last')
+  graph.setEdge(pathC, lastVert)
+  foundPaths = [...graph.findPaths(lastVert)]
+  t.equals(foundPaths.length, 2, 'there should be 2 found paths')
+
   t.end()
 })
 
