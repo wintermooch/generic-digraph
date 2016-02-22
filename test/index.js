@@ -160,6 +160,7 @@ tape('delete vertex', function (t) {
   graph.setEdge(pathA, vertexToDelete)
   graph.setEdge(pathB, vertexToDelete)
   graph.setEdge(pathC, vertexToDelete)
+
   let deleted = graph.delVertex(vertexToDelete)
   t.equal(deleted, true)
   t.equal([...graph].length, 4, 'should delete vertex')

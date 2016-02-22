@@ -236,19 +236,15 @@ module.exports = class Vertex {
    * @return {boolean} whether the delete was succesful
    */
   delVertex (vertex) {
-    if (vertex === this) {
-      return false
-    }
-
     let wasDeleted = false
     for (let currentVert of this.iterateEdges()) {
       let parent = currentVert[2]
       let name = currentVert[0]
       if (currentVert[1] === vertex) {
-        wasDeleted = parent._edges.delete(name)
+        wasDeleted |= parent._edges.delete(name)
       }
     }
-    return wasDeleted
+    return Boolean(wasDeleted)
   }
 
   /**
@@ -262,61 +258,56 @@ module.exports = class Vertex {
   /**
    * Does a depth first iteration of the graph
    */
-  * [Symbol.iterator] (path, parent, vistedVertices) {
-    // defaults
-    if (!path) {
-      path = []
-    }
-    if (!vistedVertices) {
-      vistedVertices = new WeakSet()
-    }
-    if (!vistedVertices.has(this)) {
-      vistedVertices.add(this)
-      yield [path, this, parent]
-      for (let edge of this._edges) {
-        let nextPath = path.concat(edge[0])
-        yield* edge[1][Symbol.iterator](nextPath, this, vistedVertices)
+  * [Symbol.iterator] () {
+    function * yieldFn (opts) {
+      if (opts.name) {
+        opts.path = opts.path.concat(opts.name)
+      }
+      if (!opts.visited) {
+        yield [opts.path, opts.vertex, opts.parent]
       }
     }
-    // yield [[], this]
-    // // let path = []
-    // // for (let edge of this.iterateEdges()) {
-    // //   if(!edge.visted){
-    // //     path.push(edge.name)
-    // //     yield 
-    // //   }
-    // // }
-    // function onVertex () {
-    
-    // }
-    // function* yieldFn (){
-    //   yield null 
-    // }
-    // yield* this.iterateEdges () 
+
+    let opts = {
+      vistedVertices: new WeakSet(),
+      onYield: yieldFn,
+      path: []
+    }
+    yield* this._iterator(opts)
+  }
+
+  * _iterator (opts) {
+    opts.vertex = this
+    opts.visited = opts.vistedVertices.has(this)
+    opts = Object.assign({}, opts)
+    yield* opts.onYield(opts)
+
+    if (!opts.visited) {
+      opts.vistedVertices.add(this)
+      opts.parent = this
+      for (let edge of this._edges) {
+        opts.name = edge[0]
+        yield* edge[1]._iterator(opts)
+      }
+    }
   }
 
   /**
    * Does a depth first iteration of all the edges in the graph.
    * @yields {array} - an array in the format of `[edgeName, vertex, parentVertex]`
    */
-  * iterateEdges (name, parent, vistedVertices) {
+  * iterateEdges () {
     // defaults
-    if (!vistedVertices) {
-      vistedVertices = new WeakSet()
-    }
-
-    let vistedVertex = false
-    if (!vistedVertices.has(this)) {
-      vistedVertex = true
-      vistedVertices.add(this)
-      for (let edge of this._edges) {
-        yield* edge[1].iterateEdges(edge[0], this, vistedVertices)
+    let opts = {
+      vistedVertices: new WeakSet(),
+      onYield: function * (opts) {
+        if (opts.name) {
+          yield [opts.name, opts.vertex, opts.parent]
+        }
+        return opts
       }
     }
-
-    if (name) {
-      yield [name, this, parent, vistedVertex]
-    }
+    yield * this._iterator(opts)
   }
 
   /**
