@@ -118,7 +118,7 @@ tape('iterators', function (t) {
   t.end()
 })
 
-tape.only('iterators - findPaths', function (t) {
+tape('iterators - findPaths', function (t) {
   let graph = new DG('root vertex')
   let pathA = Array(2).fill(Symbol('A'))
   let pathB = Array(2).fill(Symbol('B'))
@@ -145,7 +145,6 @@ tape.only('iterators - findPaths', function (t) {
   let lastVert = new DG('last')
   graph.setEdge(pathC, lastVert)
   foundPaths = [...graph.findPaths(lastVert)]
-  console.log(foundPaths);
   t.equals(foundPaths.length, 2, 'there should be 2 found paths')
 
   t.end()
