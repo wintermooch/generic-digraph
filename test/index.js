@@ -118,8 +118,8 @@ tape('iterators', function (t) {
   t.end()
 })
 
-tape('iterators - findPaths', function (t) {
-  let graph = new DG()
+tape.only('iterators - findPaths', function (t) {
+  let graph = new DG('root vertex')
   let pathA = Array(2).fill(Symbol('A'))
   let pathB = Array(2).fill(Symbol('B'))
   let pathC = Array(2).fill(Symbol('C'))
@@ -145,13 +145,28 @@ tape('iterators - findPaths', function (t) {
   let lastVert = new DG('last')
   graph.setEdge(pathC, lastVert)
   foundPaths = [...graph.findPaths(lastVert)]
+  console.log(foundPaths);
   t.equals(foundPaths.length, 2, 'there should be 2 found paths')
 
   t.end()
 })
 
-tape('delete vertex', function (t) {
+tape('iterator - edges', function (t) {
+  let pathA = Array(2).fill(Symbol('A'))
+  let pathB = Array(2).fill(Symbol('B'))
+  let pathC = Array(2).fill(Symbol('C'))
+  let vertexToFind = new DG('find me!')
+
   let graph = new DG()
+  graph.setEdge(pathA, vertexToFind)
+  graph.setEdge(pathB, vertexToFind)
+  graph.setEdge(pathC, vertexToFind)
+  t.equals([...graph.iterateEdges()].length, 6, 'should iterate over all the edges')
+  t.end()
+})
+
+tape('delete vertex', function (t) {
+  let graph = new DG('root vertex')
   let pathA = Array(2).fill(Symbol('A'))
   let pathB = Array(2).fill(Symbol('B'))
   let pathC = Array(2).fill(Symbol('C'))

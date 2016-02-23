@@ -1,4 +1,5 @@
 'use strict'
+const ABORTED = Symbol('aborted')
 
 /**
  * A very generic directed graph implementation made to be easy to extend
@@ -236,15 +237,24 @@ module.exports = class Vertex {
    * @return {boolean} whether the delete was succesful
    */
   delVertex (vertex) {
-    let wasDeleted = false
-    for (let currentVert of this.iterateEdges()) {
-      let parent = currentVert[2]
-      let name = currentVert[0]
-      if (currentVert[1] === vertex) {
-        wasDeleted |= parent._edges.delete(name)
+    let found = false
+    this.aggergate({
+      reduce: function (currentVert, results, contining) {
+        // [name, result]
+        if (!contining) {
+          found = true
+          return true
+        } else {
+          for (let result of results) {
+            currentVert._edges.delete(result[0])
+          }
+        }
+      },
+      continue: function (currentvert) {
+        return currentvert !== vertex
       }
-    }
-    return Boolean(wasDeleted)
+    })
+    return found
   }
 
   /**
@@ -268,6 +278,7 @@ module.exports = class Vertex {
       }
     }
 
+    // yield [[], this]
     let opts = {
       vistedVertices: new WeakSet(),
       onYield: yieldFn,
@@ -276,20 +287,68 @@ module.exports = class Vertex {
     yield* this._iterator(opts)
   }
 
+  // opts {
+  //  visisted
+  //  vertex
+  //  vististedVertices
+  //  parent
+  // }
   * _iterator (opts) {
     opts.vertex = this
     opts.visited = opts.vistedVertices.has(this)
-    opts = Object.assign({}, opts)
-    yield* opts.onYield(opts)
 
-    if (!opts.visited) {
+    let contining = true
+    let results = []
+
+    if (opts.continue && !opts.continue(this, opts)) {
+      contining = false
+    }
+
+    if (!opts.visited && contining) {
       opts.vistedVertices.add(this)
       opts.parent = this
       for (let edge of this._edges) {
-        opts.name = edge[0]
-        yield* edge[1]._iterator(opts)
+        let childrenOpts = Object.assign({}, opts)
+        childrenOpts.name = edge[0]
+        let result = yield* edge[1]._iterator(childrenOpts)
+        if (result) {
+          results.push([childrenOpts.name, result])
+        }
       }
     }
+    return yield* opts.onYield(opts, results, contining)
+  }
+
+  // opts {
+  //  visistedEdges
+  //  continue
+  //  reduce
+  // }
+  aggergate (opts) {
+    // TODO add accumulator
+    // TODO add map(aummulation, aggereration, vertex)
+    if (!opts.visitedEdges) {
+      opts.vistedVertices = new Set()
+    }
+
+    let contining = true
+    let results = []
+
+    if (opts.continue && !opts.continue(this)) {
+      contining = false
+    }
+
+    if (!opts.vistedVertices.has(this) && contining) {
+      opts.vistedVertices.add(this)
+      for (let vert of this._edges) {
+        let result = vert[1].aggergate(opts)
+        if (result) {
+          results.push([vert[0], result])
+        }
+      }
+    }
+
+    return opts.reduce(this, results, contining)
   }
 
   /**
@@ -304,7 +363,6 @@ module.exports = class Vertex {
         if (opts.name) {
           yield [opts.name, opts.vertex, opts.parent]
         }
-        return opts
       }
     }
     yield * this._iterator(opts)
@@ -314,40 +372,89 @@ module.exports = class Vertex {
    * iterates all the acyclic path possibilties from the current vertex to a given vertex
    * @param {vertex} vertex
    */
-  * findPaths (vertex, path, vistedVertices, foundPaths) {
+  * findPaths (vertex) {
     // defaults
-    if (!path) {
-      path = []
-    }
-    if (!vistedVertices) {
-      vistedVertices = new WeakSet()
-    }
-    if (!foundPaths) {
-      foundPaths = new Map()
-    }
+    // if (!path) {
+    //   path = []
+    // }
+    // if (!vistedVertices) {
+    //   vistedVertices = new WeakSet()
+    // }
+    // if (!foundPaths) {
+    //   foundPaths = new Map()
+    // }
 
-    if (this === vertex) {
-      yield path
-      return [path]
-    } else if (foundPaths.has(this)) {
-      for (let foundPath in foundPaths.get(this)) {
-        yield path.concat(foundPath)
-      }
-    } else if (!vistedVertices.has(this)) {
-      vistedVertices.add(this)
-      let paths = []
-      for (let edge of this._edges) {
-        let nextPath = path.concat(edge[0])
-        let result = yield* edge[1].findPaths(vertex, nextPath, vistedVertices, foundPaths)
-        if (result) {
-          paths.push(path.concat(edge[0]))
+    // if (this === vertex) {
+    //   yield path
+    //   return [path]
+    // } else if (foundPaths.has(this)) {
+    //   for (let foundPath in foundPaths.get(this)) {
+    //     yield path.concat(foundPath)
+    //   }
+    // } else if (!vistedVertices.has(this)) {
+    //   vistedVertices.add(this)
+    //   let paths = []
+    //   for (let edge of this._edges) {
+    //     let nextPath = path.concat(edge[0])
+    //     let result = yield* edge[1].findPaths(vertex, nextPath, vistedVertices, foundPaths)
+    //     if (result) {
+    //       paths.push(path.concat(edge[0]))
+    //     }
+    //   }
+    //   if (paths.length) {
+    //     foundPaths.set(this, paths)
+    //     return paths
+    //   }
+    // }
+
+    // defaults
+    let foundPaths = new Map()
+    let opts = {
+      path: [],
+      vistedVertices: new WeakSet(),
+      onYield: function * (opts, results, cont) {
+        if (!cont) {
+          yield opts.path.slice()
+          return [[]]
+        } else {
+          let paths = foundPaths.get(opts.vertex)
+          // stop! there will be no results either
+          if (paths) {
+            for (let path of paths) {
+              yield opts.path.concat(path)
+            }
+          } else if (results.length) {
+            console.log('results');
+            // console.log(results);
+            // results = results.map(function (paths) {
+            //   return paths.map(function (path) {
+            //     return [opts.name].concat(path)
+            //   })
+            // })
+            let paths = []
+            for (let result of results) {
+              console.log(result);
+              let name = result[0]
+              let foundPaths = result[1]
+              for (let path of foundPaths) {
+                paths.push([name].concat(path))
+              }
+            }
+            console.log('paths');
+            console.log(paths);
+            foundPaths.set(opts.vertex, paths)
+            return paths
+          }
         }
-      }
-      if (paths.length) {
-        foundPaths.set(this, paths)
-        return paths
+      },
+      continue: function (currentVert, opts) {
+        if (opts.name) {
+          opts.path = opts.path.concat(opts.name)
+        }
+        return vertex !== currentVert
       }
     }
+    yield * this._iterator(opts)
   }
 
   /**
@@ -403,5 +510,4 @@ module.exports = class Vertex {
       }
     }
   }
-
 }
