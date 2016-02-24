@@ -1,5 +1,4 @@
 'use strict'
-const ABORTED = Symbol('aborted')
 
 /**
  * A very generic directed graph implementation made to be easy to extend
