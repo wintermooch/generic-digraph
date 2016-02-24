@@ -290,7 +290,7 @@ module.exports = class Vertex {
    * @param {object} opts
    * @param {function} opts.continue a function that detetemines whether to continue iterating the current path
    * @param {function} opts.aggregate a function returns a value for the vertex given the results of its edges
-   * @param {object} opts.accumulate an object at is copied and passed down each of the child vertices
+   * @param {object|function} opts.accumulate an object at is copied and passed down each of the child vertices
    */
   * iterate (opts, accum, name) {
     // defaults
