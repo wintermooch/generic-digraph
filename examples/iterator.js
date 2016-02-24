@@ -6,16 +6,16 @@ graph.setEdge(['a'], 1)
 graph.setEdge(['b'], 2)
 graph.setEdge(['c'], 3)
 
-graph.setEdge(['a', 'a^'], 1)
-graph.setEdge(['a', 'a*'], 1)
+graph.setEdge(['a', 'a^'], 2)
+graph.setEdge(['a', 'a*'], 6)
 graph.setEdge(['a', 'a&'], 1)
 
-graph.setEdge(['b', 'b^'], 1)
-graph.setEdge(['b', 'b*'], 1)
+graph.setEdge(['b', 'b^'], 2)
+graph.setEdge(['b', 'b*'], 3)
 graph.setEdge(['b', 'b&'], 1)
 
-graph.setEdge(['c', 'c^'], 1)
-graph.setEdge(['c', 'c*'], 1)
+graph.setEdge(['c', 'c^'], 2)
+graph.setEdge(['c', 'c*'], 4)
 graph.setEdge(['c', 'b&'], 1)
 
 // sums all the values on the graph
