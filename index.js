@@ -237,22 +237,22 @@ module.exports = class Vertex {
    */
   delVertex (vertex) {
     let found = false
-    this.aggergate({
-      reduce: function (currentVert, results, contining) {
+    this.iterate({
+      aggergate: function * (name, currVert, accum, results, cont) {
         // [name, result]
-        if (!contining) {
+        if (!cont) {
           found = true
           return true
         } else {
           for (let result of results) {
-            currentVert._edges.delete(result[0])
+            currVert._edges.delete(result[0])
           }
         }
       },
-      continue: function (currentvert) {
-        return currentvert !== vertex
+      continue: function (name, currVert) {
+        return currVert !== vertex
       }
-    })
+    }).next()
     return found
   }
 
@@ -268,89 +268,50 @@ module.exports = class Vertex {
    * Does a depth first iteration of the graph
    */
   * [Symbol.iterator] () {
-    function * yieldFn (opts) {
-      if (opts.name) {
-        opts.path = opts.path.concat(opts.name)
-      }
-      if (!opts.visited) {
-        yield [opts.path, opts.vertex, opts.parent]
-      }
-    }
-
     // yield [[], this]
     let opts = {
-      visitedVertices: new WeakSet(),
-      onYield: yieldFn,
-      path: []
+      aggergate: function * (name, currVert, accum, results, cont) {
+        if (name) {
+          accum.path = accum.path.concat(name)
+        }
+        if (cont) {
+          yield [accum.path, currVert]
+        }
+      },
+      accumulate: {
+        path: []
+      }
     }
-    yield* this._iterator(opts)
+    yield* this.iterate(opts)
   }
 
-  // opts {
-  //  visisted
-  //  vertex
-  //  vistiistedVertices
-  //  parent
-  // }
-  * _iterator (opts) {
+  * iterate (opts, accum, name) {
+    // defaults
     if (!opts.visitedVertices) {
       opts.visitedVertices = new Set()
     }
-    opts.vertex = this
-    opts.visited = opts.visitedVertices.has(this)
-
-    let contining = true
+    if (!accum) {
+      accum = opts.accumulate || {}
+    }
+    let cont = !opts.visitedVertices.has(this)
     let results = []
 
-    if (opts.continue && !opts.continue(this, opts)) {
-      contining = false
+    if (opts.continue && !opts.continue(name, this, accum)) {
+      cont = false
     }
 
-    if (!opts.visited && contining) {
+    if (cont) {
       opts.visitedVertices.add(this)
-      opts.parent = this
       for (let edge of this._edges) {
-        let childrenOpts = Object.assign({}, opts)
-        childrenOpts.name = edge[0]
-        let result = yield* edge[1]._iterator(childrenOpts)
+        let childAccum = Object.assign({}, accum)
+        let childName = edge[0]
+        let result = yield* edge[1].iterate(opts, childAccum, childName)
         if (result) {
-          results.push([childrenOpts.name, result])
+          results.push([childName, result])
         }
       }
     }
-    return yield* opts.onYield(opts, results, contining)
-  }
-
-  // opts {
-  //  visistedEdges
-  //  continue
-  //  reduce
-  // }
-  aggergate (opts) {
-    // TODO add accumulator
-    // TODO add map(aummulation, aggereration, vertex)
-    if (!opts.visitedVertices) {
-      opts.visitedVertices = new Set()
-    }
-
-    let contining = true
-    let results = []
-
-    if (opts.continue && !opts.continue(this)) {
-      contining = false
-    }
-
-    if (!opts.visitedVertices.has(this) && contining) {
-      opts.visitedVertices.add(this)
-      for (let vert of this._edges) {
-        let result = vert[1].aggergate(opts)
-        if (result) {
-          results.push([vert[0], result])
-        }
-      }
-    }
-
-    return opts.reduce(this, results, contining)
+    return yield* opts.aggergate(name, this, accum, results, cont)
   }
 
   /**
@@ -358,15 +319,15 @@ module.exports = class Vertex {
    * @yields {array} - an array in the format of `[edgeName, vertex, parentVertex]`
    */
   * iterateEdges () {
-    // defaults
     let opts = {
-      onYield: function * (opts) {
-        if (opts.name) {
-          yield [opts.name, opts.vertex, opts.parent]
+      aggergate: function * (name, currVert) {
+        // the first vertex won't have a path name
+        if (name) {
+          yield [name, currVert]
         }
       }
     }
-    yield * this._iterator(opts)
+    yield * this.iterate(opts)
   }
 
   /**
@@ -377,38 +338,44 @@ module.exports = class Vertex {
     // defaults
     let foundPaths = new Map()
     let opts = {
-      path: [],
-      onYield: function * (opts, results, cont) {
-        let paths = foundPaths.get(opts.vertex)
+      accumulate: {
+        path: []
+      },
+      aggergate: function * (name, curVert, accum, results) {
+        let paths = foundPaths.get(curVert)
         // we have reached the end
-        if (!cont) {
-          yield opts.path.slice()
+        if (!accum.cont) {
+          yield accum.path
           return [
             []
           ]
         } else if (paths) {
+          // we have hit a node that all ready has been trasvered, so combine
+          // results
           for (let path of paths) {
-            yield opts.path.concat(path)
+            yield accum.path.concat(path)
           }
         } else if (results.length) {
+          // yeild all the path combiniations
           paths = []
           for (let result of results) {
             for (let path of result[1]) {
               paths.push([result[0]].concat(path))
             }
           }
-          foundPaths.set(opts.vertex, paths)
+          foundPaths.set(curVert, paths)
           return paths
         }
       },
-      continue: function (currentVert, opts) {
-        if (opts.name) {
-          opts.path = opts.path.concat(opts.name)
+      continue: function (name, currentVert, accum) {
+        if (name) {
+          accum.path = accum.path.concat(name)
         }
-        return vertex !== currentVert
+        accum.cont = vertex !== currentVert
+        return accum.cont
       }
     }
-    yield * this._iterator(opts)
+    yield * this.iterate(opts)
   }
 
   /**
