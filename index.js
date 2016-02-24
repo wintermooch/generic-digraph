@@ -11,7 +11,7 @@ module.exports = class Vertex {
    */
   constructor (vertex) {
     this._edges = this.constructor.Edges()
-    this._value = null
+    this._value = vertex
 
     if (vertex) {
       // copy constructor
@@ -285,6 +285,12 @@ module.exports = class Vertex {
     yield* this.iterate(opts)
   }
 
+  /**
+   * Iterates over the graph
+   * @param {object} opts
+   * @param {function} opts.continue a function that detetemines whether to continue iterating the current path
+   * @param {function} opts.aggergate a function returns a value for the vertex given the results of its edges
+   */
   * iterate (opts, accum, name) {
     // defaults
     if (!opts.visitedVertices) {
@@ -293,6 +299,7 @@ module.exports = class Vertex {
     if (!accum) {
       accum = opts.accumulate || {}
     }
+
     let cont = !opts.visitedVertices.has(this)
     let results = []
 
