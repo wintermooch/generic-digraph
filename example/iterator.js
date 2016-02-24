@@ -30,7 +30,7 @@ let results = graph.iterate({
   }
 }).next().value
 // 15
-console.log(results);
+console.log(results)
 
 // returns all the values on the graph
 let allValues = graph.iterate({
