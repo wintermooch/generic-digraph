@@ -20,7 +20,7 @@ graph.setEdge(['c', 'b&'], 1)
 
 // sums all the values on the graph
 let results = graph.iterate({
-  aggergate: function * (name, vertex, accum, results) {
+  aggregate: function * (name, vertex, accum, results) {
     let sum = vertex.value
     for (let result of results) {
       // result[index, value]
@@ -34,7 +34,7 @@ console.log(results)
 
 // returns all the values on the graph
 let allValues = graph.iterate({
-  aggergate: function * (name, vertex, accum, results) {
+  aggregate: function * (name, vertex, accum, results) {
     yield vertex.value
   }
 })

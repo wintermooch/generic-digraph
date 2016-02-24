@@ -147,6 +147,11 @@ tape('iterators - findPaths', function (t) {
   foundPaths = [...graph.findPaths(lastVert)]
   t.equals(foundPaths.length, 2, 'there should be 2 found paths')
 
+  foundPaths = [...graph.findPaths(commonVertex)]
+  t.equals(foundPaths.length, 2, 'there should be 2 found paths')
+  t.deepEqual(foundPaths[0], pathA)
+  t.deepEqual(foundPaths[1], pathB)
+
   t.end()
 })
 

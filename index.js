@@ -238,7 +238,7 @@ module.exports = class Vertex {
   delVertex (vertex) {
     let found = false
     this.iterate({
-      aggergate: function * (name, currVert, accum, results, cont) {
+      aggregate: function * (name, currVert, accum, results, cont) {
         // [name, result]
         if (!cont) {
           found = true
@@ -270,7 +270,7 @@ module.exports = class Vertex {
   * [Symbol.iterator] () {
     // yield [[], this]
     let opts = {
-      aggergate: function * (name, currVert, accum, results, cont) {
+      aggregate: function * (name, currVert, accum, results, cont) {
         if (name) {
           accum.path = accum.path.concat(name)
         }
@@ -289,7 +289,8 @@ module.exports = class Vertex {
    * Iterates over the graph
    * @param {object} opts
    * @param {function} opts.continue a function that detetemines whether to continue iterating the current path
-   * @param {function} opts.aggergate a function returns a value for the vertex given the results of its edges
+   * @param {function} opts.aggregate a function returns a value for the vertex given the results of its edges
+   * @param {object} opts.accumulate an object at is copied and passed down each of the child vertices
    */
   * iterate (opts, accum, name) {
     // defaults
@@ -297,11 +298,19 @@ module.exports = class Vertex {
       opts.visitedVertices = new Set()
     }
     if (!accum) {
-      accum = opts.accumulate || {}
+      if (typeof opts.accumulate === 'function') {
+        opts.accumFn = opts.accumulate
+      } else {
+        accum = opts.accumulate || {}
+      }
     }
 
     let cont = !opts.visitedVertices.has(this)
     let results = []
+
+    if (opts.accumFn) {
+      accum = opts.accumulate(name, this, accum)
+    }
 
     if (opts.continue && !opts.continue(name, this, accum)) {
       cont = false
@@ -318,7 +327,7 @@ module.exports = class Vertex {
         }
       }
     }
-    return yield* opts.aggergate(name, this, accum, results, cont)
+    return yield* opts.aggregate(name, this, accum, results, cont)
   }
 
   /**
@@ -327,7 +336,7 @@ module.exports = class Vertex {
    */
   * iterateEdges () {
     let opts = {
-      aggergate: function * (name, currVert) {
+      aggregate: function * (name, currVert) {
         // the first vertex won't have a path name
         if (name) {
           yield [name, currVert]
@@ -345,10 +354,7 @@ module.exports = class Vertex {
     // defaults
     let foundPaths = new Map()
     let opts = {
-      accumulate: {
-        path: []
-      },
-      aggergate: function * (name, curVert, accum, results) {
+      aggregate: function * (name, curVert, accum, results) {
         let paths = foundPaths.get(curVert)
         // we have reached the end
         if (!accum.cont) {
@@ -374,11 +380,17 @@ module.exports = class Vertex {
           return paths
         }
       },
-      continue: function (name, currentVert, accum) {
+      accumulate: function (name, currentVert, accum) {
         if (name) {
           accum.path = accum.path.concat(name)
+          accum.cont = vertex !== currentVert
+          return accum
+        } else {
+          // default value
+          return {path: [], cont: true}
         }
-        accum.cont = vertex !== currentVert
+      },
+      continue: function (name, currentVert, accum) {
         return accum.cont
       }
     }
@@ -403,8 +415,6 @@ module.exports = class Vertex {
     if (path.length) {
       let name = path.shift()
       let nextVertex = this._edges.get(name)
-      // inject something
-      // nextVertex = checkFunc(nextVertex)
       if (nextVertex) {
         yield nextVertex
         yield* nextVertex._iterPath(path)
