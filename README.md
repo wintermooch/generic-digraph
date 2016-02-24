@@ -44,6 +44,9 @@ vertex.delEdge('friend')
 vertex.isEmpty()
 ```
 
+More Examples  
+[./examples/](./examples)
+
 # API
 [./docs/](./docs/index.md)
 
