@@ -401,7 +401,7 @@ module.exports = class Vertex {
    * iterates a given path
    * @param {array} path
    */
-  * iterPath (path) {
+  * iteratePath (path) {
     path = Vertex.formatPath(path)
     yield* this._iterPath(path)
   }

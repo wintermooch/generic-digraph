@@ -96,11 +96,11 @@ tape('iterators', function (t) {
   let value = Symbol()
 
   graph.setEdge(path, value)
-  let foundPath = [...graph.iterPath(path)]
+  let foundPath = [...graph.iteratePath(path)]
   t.equal(foundPath.length, 100, 'the iterator should return all the vertices on the path')
   t.equal(foundPath[99].getValue(), value)
 
-  foundPath = [...graph.iterPath([Symbol(), Symbol()])]
+  foundPath = [...graph.iteratePath([Symbol(), Symbol()])]
   t.equal(foundPath.length, 0, 'the iterator shouldnot crash on non-existant paths')
 
   // add another path to the graph

@@ -16,7 +16,7 @@ graph.setEdge(['b', 'b&'], 1)
 
 graph.setEdge(['c', 'c^'], 2)
 graph.setEdge(['c', 'c*'], 4)
-graph.setEdge(['c', 'b&'], 1)
+graph.setEdge(['c', 'c&'], 1)
 
 // sums all the values on the graph
 let results = graph.iterate({
@@ -57,5 +57,4 @@ let allPaths = graph.iterate({
   }
 })
 
-// [1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 3, 0]
 console.log([...allPaths])
