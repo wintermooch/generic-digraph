@@ -272,15 +272,13 @@ module.exports = class Vertex {
     let opts = {
       aggregate: function * (name, currVert, accum, results, cont) {
         if (name) {
-          accum.path = accum.path.concat(name)
+          accum.path = accum.concat(name)
         }
         if (cont) {
           yield [accum.path, currVert]
         }
       },
-      accumulate: {
-        path: []
-      }
+      accumulate: []
     }
     yield* this.iterate(opts)
   }
@@ -303,13 +301,15 @@ module.exports = class Vertex {
       } else {
         accum = opts.accumulate || {}
       }
+    } else {
+      // accum = Object.assign({}, accum)
     }
 
     let cont = !opts.visitedVertices.has(this)
     let results = []
 
     if (opts.accumFn) {
-      accum = opts.accumulate(name, this, accum)
+      accum = opts.accumFn(name, this, accum)
     }
 
     if (opts.continue && !opts.continue(name, this, accum)) {
@@ -319,9 +319,8 @@ module.exports = class Vertex {
     if (cont) {
       opts.visitedVertices.add(this)
       for (let edge of this._edges) {
-        let childAccum = Object.assign({}, accum)
         let childName = edge[0]
-        let result = yield* edge[1].iterate(opts, childAccum, childName)
+        let result = yield* edge[1].iterate(opts, accum, childName)
         if (result) {
           results.push([childName, result])
         }
@@ -382,6 +381,7 @@ module.exports = class Vertex {
       },
       accumulate: function (name, currentVert, accum) {
         if (name) {
+          accum = Object.assign({}, accum)
           accum.path = accum.path.concat(name)
           accum.cont = vertex !== currentVert
           return accum

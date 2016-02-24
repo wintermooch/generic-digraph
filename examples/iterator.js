@@ -41,3 +41,21 @@ let allValues = graph.iterate({
 
 // [1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 3, 0]
 console.log([...allValues])
+
+let allPaths = graph.iterate({
+  aggregate: function * (name, vertex, accum, results) {
+    yield accum
+  },
+  accumulate: function (edgeName, vertex, accum) {
+    if (edgeName) {
+      accum = accum.concat(edgeName)
+      return accum
+    } else {
+      // the intial value for the accumlator
+      return []
+    }
+  }
+})
+
+// [1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 3, 0]
+console.log([...allPaths])
