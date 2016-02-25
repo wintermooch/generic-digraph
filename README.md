@@ -48,7 +48,18 @@ More Examples
 [./examples/](./examples)
 
 # API
+
 [./docs/](./docs/index.md)
+
+when decsending the graph, `accumulate`!  
+when asecending the graph, `aggergate`!  
+
+do you wish to not decsend futher?  
+then using `continue`, do consider  
+ 
+`accumlate`, `continue`, `aggergate`, repeat  
+`accumlate`, `continue`, `aggergate`, repeat  
+
 
 # EXTENDING
 This was module was built so that it could be easly extended. To see an example look at

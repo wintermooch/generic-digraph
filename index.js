@@ -300,7 +300,7 @@ module.exports = class Vertex {
       if (typeof opts.accumulate === 'function') {
         opts.accumFn = opts.accumulate
       } else {
-        accum = opts.accumulate || {}
+        accum = opts.accumulate
       }
     } else {
       // accum = Object.assign({}, accum)
