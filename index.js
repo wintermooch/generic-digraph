@@ -397,31 +397,6 @@ module.exports = class Vertex {
     yield * this.iterate(opts)
   }
 
-  /**
-   * iterates a given path
-   * @param {array} path
-   */
-  * iteratePath (path) {
-    path = Vertex.formatPath(path)
-    yield* this._iterPath(path)
-  }
-
-  /**
-   * override this to implement a custom `iterPath`
-   * @param {array} path
-   * @private
-   */
-  * _iterPath (path) {
-    if (path.length) {
-      let name = path.shift()
-      let nextVertex = this._edges.get(name)
-      if (nextVertex) {
-        yield nextVertex
-        yield* nextVertex._iterPath(path)
-      }
-    }
-  }
-
   toString () {
     let string = `root`
     // string += ' Edges ' + this.edges.size
