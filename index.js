@@ -271,7 +271,8 @@ module.exports = class Vertex {
     // yield [[], this]
     let opts = {
       aggregate: function * (name, currVert, accum, results, cont) {
-        if (name) {
+        // if you name an edge 'undefined' its your own fault for breaking this
+        if (name !== undefined) {
           accum.path = accum.concat(name)
         }
         if (cont) {
