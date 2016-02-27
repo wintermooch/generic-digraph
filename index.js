@@ -156,7 +156,7 @@ module.exports = class Vertex {
    * @private
    */
   _set (path, payload, setFnc) {
-    let name = path.shift()
+    const name = path.shift()
     // we are at the end of the path
     if (!path.length) {
       return this[setFnc](name, payload)
@@ -187,7 +187,7 @@ module.exports = class Vertex {
         return this
       }
     } else {
-      let name = path.shift()
+      const name = path.shift()
       let nextVertex = this._edges.get(name)
       if (!nextVertex) {
         return
@@ -214,15 +214,15 @@ module.exports = class Vertex {
    * @private
    */
   _delete (path) {
-    let name = path.shift()
-    let nextVertex = this._edges.get(name)
+    const name = path.shift()
+    const nextVertex = this._edges.get(name)
 
     if (!path.length) {
       return this._edges.delete(name)
     } else if (!nextVertex) {
       return false
     } else {
-      let wasDeleted = nextVertex._delete(path)
+      const wasDeleted = nextVertex._delete(path)
       if (nextVertex.isEmpty()) {
         this._edges.delete(name)
       }
@@ -244,7 +244,7 @@ module.exports = class Vertex {
           found = true
           return true
         } else {
-          for (let result of results) {
+          for (const result of results) {
             currVert._edges.delete(result[0])
           }
         }
@@ -268,7 +268,7 @@ module.exports = class Vertex {
         if (!cont) {
           return 'updated'
         } else if (results.length) {
-          for (let result of results) {
+          for (const result of results) {
             currVert._edges.set(result[0], newVertex)
           }
         }
@@ -292,7 +292,7 @@ module.exports = class Vertex {
    */
   * [Symbol.iterator] () {
     // yield [[], this]
-    let opts = {
+    const opts = {
       aggregate: function * (name, currVert, accum, results, cont) {
         // if you name an edge 'undefined' its your own fault for breaking this
         if (name !== undefined) {
@@ -330,7 +330,7 @@ module.exports = class Vertex {
 
     function makeGenerator (fn) {
       if (!isGenerator(fn)) {
-        let old = fn
+        const old = fn
         return function * () {
           return old(...arguments)
         }
@@ -346,7 +346,7 @@ module.exports = class Vertex {
 
   * _iterate (opts, accum, name) {
     let cont = !opts.visitedVertices.has(this)
-    let results = []
+    const results = []
 
     if (opts.accumFn) {
       accum = opts.accumFn(name, this, accum)
@@ -358,9 +358,9 @@ module.exports = class Vertex {
 
     if (cont) {
       opts.visitedVertices.add(this)
-      for (let edge of this._edges) {
-        let childName = edge[0]
-        let result = yield* edge[1]._iterate(opts, accum, childName)
+      for (const edge of this._edges) {
+        const childName = edge[0]
+        const result = yield* edge[1]._iterate(opts, accum, childName)
         if (result) {
           results.push([childName, result])
         }
@@ -374,7 +374,7 @@ module.exports = class Vertex {
    * @yields {array} - an array in the format of `[edgeName, vertex, parentVertex]`
    */
   * iterateEdges () {
-    let opts = {
+    const opts = {
       aggregate: function * (name, currVert) {
         // the first vertex won't have a path name
         if (name) {
@@ -391,8 +391,8 @@ module.exports = class Vertex {
    */
   * findPaths (vertex) {
     // defaults
-    let foundPaths = new Map()
-    let opts = {
+    const foundPaths = new Map()
+    const opts = {
       aggregate: function * (name, curVert, accum, results) {
         let paths = foundPaths.get(curVert)
         // we have reached the end
@@ -404,14 +404,14 @@ module.exports = class Vertex {
         } else if (paths) {
           // we have hit a node that all ready has been trasvered, so combine
           // results
-          for (let path of paths) {
+          for (const path of paths) {
             yield accum.path.concat(path)
           }
         } else if (results.length) {
           // yeild all the path combiniations
           paths = []
-          for (let result of results) {
-            for (let path of result[1]) {
+          for (const result of results) {
+            for (const path of result[1]) {
               paths.push([result[0]].concat(path))
             }
           }
@@ -440,7 +440,7 @@ module.exports = class Vertex {
   toString () {
     let string = `root`
     // string += ' Edges ' + this.edges.size
-    for (let vert of this) {
+    for (const vert of this) {
       string += `${pathToString(vert[0])} ${toString(vert[1].value)}`
       string += ' | Edges ' + vert[1].edges.size
       string += '\n'
@@ -448,7 +448,7 @@ module.exports = class Vertex {
     return string
     function pathToString (path) {
       let string = ''
-      for (let name of path) {
+      for (const name of path) {
         string += toString(name)
         string += ' -> '
       }
