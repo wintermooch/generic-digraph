@@ -302,14 +302,19 @@ module.exports = class Vertex {
       accum = opts.accumulate
     }
 
-    if (!isGenerator(opts.aggregate)) {
-      let ag = opts.aggregate
-      opts.aggregate = function * () {
-        return ag(...arguments)
+    opts.aggregate = makeGenerator(opts.aggregate)
+    return yield* this._iterate(opts, accum)
+
+    function makeGenerator (fn) {
+      if (!isGenerator(fn)) {
+        let old = fn
+        return function * () {
+          return old(...arguments)
+        }
+      } else {
+        return fn
       }
     }
-
-    return yield* this._iterate(opts, accum)
 
     function isGenerator (a) {
       return !!a.prototype.next
