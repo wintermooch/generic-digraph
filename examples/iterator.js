@@ -32,6 +32,7 @@ we now have a tree that looks like this
 
 // sums all the values on the graph
 let results = graph.iterate({
+  // aggerates the results form the its children nodes
   aggregate: function * (name, vertex, accum, results) {
     let sum = vertex.value
     for (let result of results) {
