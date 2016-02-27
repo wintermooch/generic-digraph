@@ -257,6 +257,29 @@ module.exports = class Vertex {
   }
 
   /**
+   * Finds a given vertex and updates it to the newVertex
+   * @param {vertex} vertx
+   * @param {vertex} newVertex
+   */
+  setVertex (vertex, newVertex) {
+    this.iterate({
+      aggregate: function * (name, currVert, accum, results, cont) {
+        // [name, result]
+        if (!cont) {
+          return 'updated'
+        } else if (results.length) {
+          for (let result of results) {
+            currVert._edges.set(result[0], newVertex)
+          }
+        }
+      },
+      continue: function (name, currVert) {
+        return currVert !== vertex
+      }
+    }).next().value
+  }
+
+  /**
    * Returns truthy on whether the vertexs is empty
    * @return {boolean}
    */

@@ -179,3 +179,21 @@ tape('delete vertex', function (t) {
   t.end()
 })
 
+tape('set a vertex', function (t) {
+  let graph = new DG('root vertex')
+  let pathA = Array(2).fill(Symbol('A'))
+  let pathB = Array(2).fill(Symbol('B'))
+  let pathC = Array(2).fill(Symbol('C'))
+  let pathD = Array(2).fill(Symbol('D'))
+  let vertexToUpdate = new DG('replace me!')
+  let newVertex = new DG('new vertex!')
+
+  graph.setEdge(pathA, vertexToUpdate)
+  graph.setEdge(pathB, vertexToUpdate)
+  graph.setEdge(pathC, vertexToUpdate)
+  graph.setEdge(pathD, 'nothing here')
+  graph.setVertex(vertexToUpdate, newVertex)
+
+  t.equal(graph.getEdge(pathA), newVertex, 'should update the vertex')
+  t.end()
+})
