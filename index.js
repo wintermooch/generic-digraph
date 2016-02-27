@@ -238,7 +238,7 @@ module.exports = class Vertex {
   delVertex (vertex) {
     let found = false
     this.iterate({
-      aggregate: function * (name, currVert, accum, results, cont) {
+      aggregate: function (name, currVert, accum, results, cont) {
         // [name, result]
         if (!cont) {
           found = true
@@ -291,21 +291,32 @@ module.exports = class Vertex {
    * @param {function} opts.aggregate a function returns a value for the vertex given the results of its edges
    * @param {object|function} opts.accumulate an object at is copied and passed down each of the child vertices
    */
-  * iterate (opts, accum, name) {
+  * iterate (opts) {
     // defaults
-    if (!opts.visitedVertices) {
-      opts.visitedVertices = new Set()
-    }
-    if (!accum) {
-      if (typeof opts.accumulate === 'function') {
-        opts.accumFn = opts.accumulate
-      } else {
-        accum = opts.accumulate
-      }
+    opts.visitedVertices = new Set()
+
+    let accum
+    if (typeof opts.accumulate === 'function') {
+      opts.accumFn = opts.accumulate
     } else {
-      // accum = Object.assign({}, accum)
+      accum = opts.accumulate
     }
 
+    if (!isGenerator(opts.aggregate)) {
+      let ag = opts.aggregate
+      opts.aggregate = function * () {
+        return ag(...arguments)
+      }
+    }
+
+    return yield* this._iterate(opts, accum)
+
+    function isGenerator (a) {
+      return !!a.prototype.next
+    }
+  }
+
+  * _iterate (opts, accum, name) {
     let cont = !opts.visitedVertices.has(this)
     let results = []
 
@@ -321,7 +332,7 @@ module.exports = class Vertex {
       opts.visitedVertices.add(this)
       for (let edge of this._edges) {
         let childName = edge[0]
-        let result = yield* edge[1].iterate(opts, accum, childName)
+        let result = yield* edge[1]._iterate(opts, accum, childName)
         if (result) {
           results.push([childName, result])
         }
