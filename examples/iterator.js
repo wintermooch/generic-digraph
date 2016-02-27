@@ -18,6 +18,19 @@ graph.setEdge(['c', 'c^'], 2)
 graph.setEdge(['c', 'c*'], 4)
 graph.setEdge(['c', 'c&'], 1)
 
+/**
+we now have a tree that looks like this
+          0 - root
+       /  | \
+      /   |  \    
+     a    b   c
+    /     |    \ 
+   1      2     3
+ / | \  / | \  / | \
+2  6  13  2  12  4  1
+**/
+
+
 // sums all the values on the graph
 let results = graph.iterate({
   aggregate: function * (name, vertex, accum, results) {
