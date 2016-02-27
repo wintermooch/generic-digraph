@@ -51,6 +51,8 @@ More Examples
 
 [./docs/](./docs/index.md)
 
+Notes on [iterate](https://github.com/wanderer/generic-digraph/blob/master/docs/index.md#iterate)
+
 when decsending the graph, `accumulate`!  
 when asecending the graph, `aggergate`!  
 
