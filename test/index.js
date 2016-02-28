@@ -61,8 +61,6 @@ tape('basic', function (t) {
   t.notEqual(copy, graph, 'copy should work')
   t.equal(copy.getEdge(path), graph.getEdge(path), 'copy should work')
 
-  console.log('to string should work')
-  console.log(graph.toString())
   t.end()
 })
 
@@ -195,5 +193,26 @@ tape('set a vertex', function (t) {
   graph.setVertex(vertexToUpdate, newVertex)
 
   t.equal(graph.getEdge(pathA), newVertex, 'should update the vertex')
+  t.end()
+})
+
+tape('to/fromJSON', function (t) {
+  let graph = new DG('root vertex')
+  let pathA = Array(2).fill('A')
+  let pathB = Array(2).fill('B')
+  let pathC = Array(2).fill('C')
+  let pathD = Array(2).fill('D')
+  let vertexToUpdate = new DG('replace me!')
+  let newVertex = new DG('new vertex!')
+
+  graph.setEdge(pathA, vertexToUpdate)
+  graph.setEdge(pathB, vertexToUpdate)
+  graph.setEdge(pathC, vertexToUpdate)
+  graph.setEdge(pathD, 'nothing here')
+  graph.setVertex(vertexToUpdate, newVertex)
+  const json = graph.toJSON()
+  const result = DG.fromJSON(json)
+  const json2 = result.toJSON()
+  t.equal(JSON.stringify(json2), JSON.stringify(json), 'should produce and read json')
   t.end()
 })

@@ -437,30 +437,45 @@ module.exports = class Vertex {
     yield * this.iterate(opts)
   }
 
-  toString () {
-    let string = `root`
-    // string += ' Edges ' + this.edges.size
-    for (const vert of this) {
-      string += `${pathToString(vert[0])} ${toString(vert[1].value)}`
-      string += ' | Edges ' + vert[1].edges.size
-      string += '\n'
-    }
-    return string
-    function pathToString (path) {
-      let string = ''
-      for (const name of path) {
-        string += toString(name)
-        string += ' -> '
-      }
-      return string
+  toJSON () {
+    const nodes = []
+    const graph = [...this]
+    const idMap = new Map()
+    graph.reverse()
+    // label the vertices
+    let i = 0
+    for (const vertexPair of graph) {
+      const vertex = vertexPair[1]
+      idMap.set(vertex, i)
+      i++
+      nodes.push({
+        value: vertex.value,
+        edges: [...vertex.edges]
+      })
     }
 
-    function toString (value) {
-      if (typeof value === 'symbol') {
-        return String(value)
-      } else {
-        return JSON.stringify(value)
-      }
+    for (const vertex of nodes) {
+      vertex.edges = vertex.edges.map((edge) => {
+        // http://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03
+        const id = idMap.get(edge[1])
+        return [edge[0], { $ref: '/' + id }]
+      })
     }
+    return nodes
+  }
+
+  static fromJSON (json) {
+    const vertices = json.map(function (v) {
+      return new Vertex(v)
+    })
+
+    vertices.forEach(function (vert, i) {
+      vert._edges.forEach(function (edge, i) {
+        const id = edge.$ref.slice(1)
+        vert._edges.set(i, vertices[id])
+      })
+    })
+
+    return vertices[0]
   }
 }
