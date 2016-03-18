@@ -465,12 +465,13 @@ module.exports = class Vertex {
   }
 
   static fromJSON (json) {
-    const vertices = json.map(function (v) {
-      return new Vertex(v)
+    // let a = new this.constructor(json)
+    const vertices = json.map((v) => {
+      return new this(v)
     })
 
-    vertices.forEach(function (vert, i) {
-      vert._edges.forEach(function (edge, i) {
+    vertices.forEach((vert, i) => {
+      vert._edges.forEach((edge, i) => {
         const id = edge.$ref.slice(1)
         vert._edges.set(i, vertices[id])
       })
