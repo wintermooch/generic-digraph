@@ -40,7 +40,7 @@ friendsBotherVertex.getValue() // "bob"
 
 // delete an edge
 vertex.delEdge('friend')
-//now the vertex is empty
+// now the vertex is empty
 vertex.isEmpty()
 ```
 
