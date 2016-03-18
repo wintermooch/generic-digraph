@@ -19,11 +19,11 @@ var vertex = new Digraph()
 vertex.setEdge('friend', 'alice')
 
 vertex.setEdge(['friend', 'brother'], 'bob')
-//now the graph looks like:
+// now the graph looks like:
 // [vertex]---friend--->[alice]---brother-->[bob]
 
 //path names and vertex values can be anything
-vertex.setEdge([new Buffer('friend'), 5, false, {}, new Date()], Array())
+vertex.setEdge([new Buffer('friend'), 5, true, {}, new Date()], Array())
 
 // edges are stored in a Map
 vertex.edges // Map{}
@@ -31,12 +31,12 @@ vertex.edges // Map{}
 // to get an array of all of the vertices
 var vertices = [...vertex]
 
-//you can also iterate a path
+// you can also iterate a path
 vertices = [...vertex.iteratePath(['friend', 'brother'])]
 
-//getting a vertex works like setting
+// getting a vertex works like setting
 var friendsBotherVertex = vertex.setEdge(['friend', 'brother'])
-friendsBotherVertex.getValue() //"bob"
+friendsBotherVertex.getValue() // "bob"
 
 // delete an edge
 vertex.delEdge('friend')
