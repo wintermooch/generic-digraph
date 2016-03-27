@@ -44,7 +44,7 @@ module.exports = class Vertex {
    * Produces a copy of this vertex
    * @return {vertex}
    */
-  copy (vertex) {
+  copy () {
     return new this.constructor(this)
   }
 
