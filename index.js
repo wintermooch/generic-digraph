@@ -63,6 +63,13 @@ module.exports = class Vertex {
   }
 
   /**
+   * @property {boolean} isLeaf wether or not the current vertex is a leaf
+   */
+  get isLeaf () {
+    return this.edges.size === 0
+  }
+
+  /**
    * Get a vertex's value
    * @param {array} [path]
    * @return {*}

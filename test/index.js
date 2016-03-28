@@ -61,6 +61,11 @@ tape('basic', function (t) {
   t.notEqual(copy, graph, 'copy should work')
   t.equal(copy.getEdge(path), graph.getEdge(path), 'copy should work')
 
+  // check leafs
+  t.equal(graph.isLeaf, false)
+  graph = new DG()
+  t.equal(graph.isLeaf, true)
+
   t.end()
 })
 
