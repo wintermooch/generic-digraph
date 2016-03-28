@@ -420,7 +420,7 @@ module.exports = class Vertex {
         }
       },
       accumulate: function (name, currentVert, accum) {
-        if (name) {
+        if (name !== undefined) {
           accum = Object.assign({}, accum)
           accum.path = accum.path.concat(name)
           accum.cont = vertex !== currentVert

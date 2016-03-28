@@ -143,6 +143,12 @@ tape('iterators - findPaths', function (t) {
   t.deepEqual(foundPaths[0], pathA)
   t.deepEqual(foundPaths[1], pathB)
 
+  const pathOf0 = [0, 0, 0, 0, 0]
+  graph = new DG()
+  graph.setEdge(pathOf0, vertexToFind)
+  foundPaths = [...graph.findPaths(vertexToFind)]
+  t.equal(foundPaths.length, 1, 'should find paths with 0 in them')
+
   t.end()
 })
 
