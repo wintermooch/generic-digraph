@@ -171,6 +171,27 @@ tape('iterator - edges', function (t) {
   t.end()
 })
 
+tape('iterate', function (t) {
+  let pathA = Array(2).fill(Symbol('A'))
+  let pathB = Array(2).fill(Symbol('B'))
+  let pathC = Array(2).fill(Symbol('C'))
+  let vertexToFind = new DG('find me!')
+
+  let graph = new DG()
+  graph.setEdge(pathA, vertexToFind)
+  graph.setEdge(pathB, vertexToFind)
+  graph.setEdge(pathC, vertexToFind)
+
+  const it = graph.iterate({
+    accumulate: function * (name) {
+      yield name
+    }
+  })
+
+  t.equals([...it].length, 7, 'should iterate over all the edges')
+  t.end()
+})
+
 tape('delete vertex', function (t) {
   let graph = new DG('root vertex')
   let pathA = Array(2).fill(Symbol('A'))

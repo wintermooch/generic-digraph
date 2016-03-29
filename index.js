@@ -333,9 +333,14 @@ module.exports = class Vertex {
     }
 
     opts.aggregate = makeGenerator(opts.aggregate)
+    opts.accumFn = makeGenerator(opts.accumFn)
     return yield* this._iterate(opts, accum)
 
     function makeGenerator (fn) {
+      if (typeof fn !== 'function') {
+        return
+      }
+
       if (!isGenerator(fn)) {
         const old = fn
         return function * () {
@@ -356,7 +361,7 @@ module.exports = class Vertex {
     const results = []
 
     if (opts.accumFn) {
-      accum = opts.accumFn(name, this, accum)
+      accum = yield* opts.accumFn(name, this, accum)
     }
 
     if (opts.continue && !opts.continue(name, this, accum)) {
@@ -373,7 +378,10 @@ module.exports = class Vertex {
         }
       }
     }
-    return yield* opts.aggregate(name, this, accum, results, cont)
+
+    if (opts.aggregate) {
+      return yield* opts.aggregate(name, this, accum, results, cont)
+    }
   }
 
   /**
