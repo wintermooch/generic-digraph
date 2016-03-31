@@ -26,8 +26,8 @@ we now have a tree that looks like this
      a    b   c
     /     |    \
    1      2     3
- / | \  / | \  / | \
-2  6  13  2  12  4  1
+ / | \  / | \  / |\
+2  6  13  2  12  4 1
 **/
 
 // sums all the values on the graph
