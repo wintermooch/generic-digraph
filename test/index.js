@@ -7,9 +7,9 @@ tape('basic', function (t) {
   let a = Symbol('a value')
   let key = Symbol('key')
 
-  graph.setEdge(key, a)
+  graph.set(key, a)
   let c = Symbol()
-  let b = graph.getEdge(key)
+  let b = graph.get(key)
   t.equal(b.getValue(), a, 'should add and get vertices')
 
   graph.setValue([key, key], c)
@@ -17,49 +17,49 @@ tape('basic', function (t) {
   t.equal(b, c, 'should get values given a path')
 
   a = Symbol()
-  graph.setEdge(key, a)
-  b = graph.getEdge(key)
+  graph.set(key, a)
+  b = graph.get(key)
   t.equal(b.getValue(), a, 'should overwrite Symbol')
 
-  graph.delEdge([key, Symbol()])
-  b = graph.getEdge(key)
+  graph.del([key, Symbol()])
+  b = graph.get(key)
   t.equal(b.getValue(), a, 'should not delete a value on a path')
 
-  graph.delEdge(key)
-  b = graph.getEdge(key)
+  graph.del(key)
+  b = graph.get(key)
   t.equal(b, undefined, 'should delete a value')
 
-  graph.delEdge(key)
-  b = graph.getEdge(Symbol())
+  graph.del(key)
+  b = graph.get(Symbol())
   t.equal(b, undefined, 'should not get a unset value')
   t.equal(graph.isEmpty(), true, 'should report to be empty')
 
   graph.setValue([key, key], c)
 
   graph.setValue([key], c)
-  b = graph.delEdge([key, key])
+  b = graph.del([key, key])
   t.equal(graph.isEmpty(), false, 'delete should not affect connected vertices')
 
   graph.setValue('test')
-  graph.setEdge('edge', new DG({value: 'test2'}))
+  graph.set('edge', new DG({value: 'test2'}))
   let graph2 = new DG(graph)
   t.equal(graph.getValue(), graph2.getValue(), 'copy constructor should work')
-  t.equal(graph.getEdge('edge').value, 'test2', 'copy constructor should work')
+  t.equal(graph.get('edge').value, 'test2', 'copy constructor should work')
 
   graph.setValue('test')
-  graph.getEdge('edge', new DG('test2'))
+  graph.get('edge', new DG('test2'))
   graph2 = new DG(graph)
   t.equal(graph.getValue(), graph2.getValue(), 'copy constructor should work')
-  t.equal(graph.getEdge('edge').value, 'test2', 'copy constructor should work')
+  t.equal(graph.get('edge').value, 'test2', 'copy constructor should work')
 
   let edges = graph.edges
   t.equal(edges.size, 2, 'edges getter should work')
 
   let path = ['a', 'b', 'c']
-  graph.setEdge(path, {test: {object: 'with value'}})
+  graph.set(path, {test: {object: 'with value'}})
   let copy = graph.copy()
   t.notEqual(copy, graph, 'copy should work')
-  t.equal(copy.getEdge(path), graph.getEdge(path), 'copy should work')
+  t.equal(copy.get(path), graph.get(path), 'copy should work')
 
   // check leafs
   t.equal(graph.isLeaf, false)
@@ -74,19 +74,19 @@ tape('paths', function (t) {
   let path = Array(100).fill(Symbol())
   let value = Symbol()
 
-  graph.setEdge(path, value)
-  let b = graph.getEdge(path)
+  graph.set(path, value)
+  let b = graph.get(path)
   t.equal(b.getValue(), value, 'should set and get vertex on a path')
-  t.equal(graph.delEdge([Symbol()]), false, 'shouldnot delete non-existing path')
+  t.equal(graph.del([Symbol()]), false, 'shouldnot delete non-existing path')
 
   path.push(Symbol())
   path.push(Symbol())
-  t.equal(graph.delEdge(path), false, 'shouldnot delete non-existing path')
+  t.equal(graph.del(path), false, 'shouldnot delete non-existing path')
   path.pop()
   path.pop()
 
-  graph.delEdge(path)
-  b = graph.getEdge(path)
+  graph.del(path)
+  b = graph.get(path)
   t.equal(b, undefined, 'should delete a value')
   t.equal(graph.isEmpty(), true, 'should report to be empty')
 
@@ -97,17 +97,17 @@ tape('iterators', function (t) {
   let graph = new DG()
   let path = Array(100).fill(Symbol())
   let value = Symbol()
-  graph.setEdge(path, value)
+  graph.set(path, value)
 
   // add another path to the graph
   path = Array(100).fill(Symbol())
   value = Symbol()
-  graph.setEdge(path, value)
+  graph.set(path, value)
 
   let vertices = [...graph]
   t.equal(vertices.length, 201, 'the iterator should return all the vertices')
 
-  graph.setEdge(path, graph)
+  graph.set(path, graph)
   vertices = [...graph]
   t.equal(vertices.length, 200, 'the iterator should not revisit vertices')
 
@@ -121,14 +121,14 @@ tape('iterators - findPaths', function (t) {
   let pathC = Array(2).fill(Symbol('C'))
   let vertexToFind = new DG('find me!')
 
-  graph.setEdge(pathA, vertexToFind)
-  graph.setEdge(pathB, vertexToFind)
-  graph.setEdge(pathC, vertexToFind)
+  graph.set(pathA, vertexToFind)
+  graph.set(pathB, vertexToFind)
+  graph.set(pathC, vertexToFind)
 
   let foundPaths = [...graph.findPaths(vertexToFind)]
   t.equal(foundPaths.length, 3, 'should find the correct number of paths')
 
-  graph.setEdge(pathA, graph)
+  graph.set(pathA, graph)
   foundPaths = [...graph.findPaths(vertexToFind)]
   t.equal(foundPaths.length, 2, 'shouldnt get traped in cycles')
 
@@ -136,10 +136,10 @@ tape('iterators - findPaths', function (t) {
   pathC = ['a', 'b', 'c']
   pathB = ['a^', 'b^']
   let commonVertex = new DG('common')
-  graph.setEdge(pathA, commonVertex)
-  graph.setEdge(pathB, commonVertex)
+  graph.set(pathA, commonVertex)
+  graph.set(pathB, commonVertex)
   let lastVert = new DG('last')
-  graph.setEdge(pathC, lastVert)
+  graph.set(pathC, lastVert)
   foundPaths = [...graph.findPaths(lastVert)]
   t.equals(foundPaths.length, 2, 'there should be 2 found paths')
 
@@ -150,7 +150,7 @@ tape('iterators - findPaths', function (t) {
 
   const pathOf0 = [0, 0, 0, 0, 0]
   graph = new DG()
-  graph.setEdge(pathOf0, vertexToFind)
+  graph.set(pathOf0, vertexToFind)
   foundPaths = [...graph.findPaths(vertexToFind)]
   t.equal(foundPaths.length, 1, 'should find paths with 0 in them')
 
@@ -164,9 +164,9 @@ tape('iterator - edges', function (t) {
   let vertexToFind = new DG('find me!')
 
   let graph = new DG()
-  graph.setEdge(pathA, vertexToFind)
-  graph.setEdge(pathB, vertexToFind)
-  graph.setEdge(pathC, vertexToFind)
+  graph.set(pathA, vertexToFind)
+  graph.set(pathB, vertexToFind)
+  graph.set(pathC, vertexToFind)
   t.equals([...graph.iterateEdges()].length, 6, 'should iterate over all the edges')
   t.end()
 })
@@ -178,9 +178,9 @@ tape('iterate', function (t) {
   let vertexToFind = new DG('find me!')
 
   let graph = new DG()
-  graph.setEdge(pathA, vertexToFind)
-  graph.setEdge(pathB, vertexToFind)
-  graph.setEdge(pathC, vertexToFind)
+  graph.set(pathA, vertexToFind)
+  graph.set(pathB, vertexToFind)
+  graph.set(pathC, vertexToFind)
 
   const it = graph.iterate({
     accumulate: function * (name) {
@@ -199,9 +199,9 @@ tape('delete vertex', function (t) {
   let pathC = Array(2).fill(Symbol('C'))
   let vertexToDelete = new DG('delete me!')
 
-  graph.setEdge(pathA, vertexToDelete)
-  graph.setEdge(pathB, vertexToDelete)
-  graph.setEdge(pathC, vertexToDelete)
+  graph.set(pathA, vertexToDelete)
+  graph.set(pathB, vertexToDelete)
+  graph.set(pathC, vertexToDelete)
 
   let deleted = graph.delVertex(vertexToDelete)
   t.equal(deleted, true)
@@ -218,13 +218,13 @@ tape('set a vertex', function (t) {
   let vertexToUpdate = new DG('replace me!')
   let newVertex = new DG('new vertex!')
 
-  graph.setEdge(pathA, vertexToUpdate)
-  graph.setEdge(pathB, vertexToUpdate)
-  graph.setEdge(pathC, vertexToUpdate)
-  graph.setEdge(pathD, 'nothing here')
+  graph.set(pathA, vertexToUpdate)
+  graph.set(pathB, vertexToUpdate)
+  graph.set(pathC, vertexToUpdate)
+  graph.set(pathD, 'nothing here')
   graph.setVertex(vertexToUpdate, newVertex)
 
-  t.equal(graph.getEdge(pathA), newVertex, 'should update the vertex')
+  t.equal(graph.get(pathA), newVertex, 'should update the vertex')
   t.end()
 })
 
@@ -237,10 +237,10 @@ tape('to/fromJSON', function (t) {
   let vertexToUpdate = new DG('replace me!')
   let newVertex = new DG('new vertex!')
 
-  graph.setEdge(pathA, vertexToUpdate)
-  graph.setEdge(pathB, vertexToUpdate)
-  graph.setEdge(pathC, vertexToUpdate)
-  graph.setEdge(pathD, 'nothing here')
+  graph.set(pathA, vertexToUpdate)
+  graph.set(pathB, vertexToUpdate)
+  graph.set(pathC, vertexToUpdate)
+  graph.set(pathD, 'nothing here')
   graph.setVertex(vertexToUpdate, newVertex)
   const json = graph.toJSON()
   const result = DG.fromJSON(json)

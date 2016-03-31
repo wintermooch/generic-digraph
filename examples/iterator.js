@@ -2,21 +2,21 @@
 const DG = require('../')
 
 let graph = new DG(0)
-graph.setEdge(['a'], 1)
-graph.setEdge(['b'], 2)
-graph.setEdge(['c'], 3)
+graph.set(['a'], 1)
+graph.set(['b'], 2)
+graph.set(['c'], 3)
 
-graph.setEdge(['a', 'a^'], 2)
-graph.setEdge(['a', 'a*'], 6)
-graph.setEdge(['a', 'a&'], 1)
+graph.set(['a', 'a^'], 2)
+graph.set(['a', 'a*'], 6)
+graph.set(['a', 'a&'], 1)
 
-graph.setEdge(['b', 'b^'], 2)
-graph.setEdge(['b', 'b*'], 3)
-graph.setEdge(['b', 'b&'], 1)
+graph.set(['b', 'b^'], 2)
+graph.set(['b', 'b*'], 3)
+graph.set(['b', 'b&'], 1)
 
-graph.setEdge(['c', 'c^'], 2)
-graph.setEdge(['c', 'c*'], 4)
-graph.setEdge(['c', 'c&'], 1)
+graph.set(['c', 'c^'], 2)
+graph.set(['c', 'c*'], 4)
+graph.set(['c', 'c&'], 1)
 
 /**
 we now have a tree that looks like this

@@ -123,7 +123,7 @@ module.exports = class Vertex {
    * @param {array} path
    * @return {DG}
    */
-  getEdge (path) {
+  get (path) {
     path = Vertex.formatPath(path)
     return this._get(path)
   }
@@ -133,7 +133,7 @@ module.exports = class Vertex {
    * @param {array} path
    * @param {*} vertex
    */
-  setEdge (path, vertex) {
+  set (path, vertex) {
     // only do the path and vertex validation here
     if (!(vertex instanceof Vertex)) {
       vertex = new this.constructor(vertex)
@@ -209,7 +209,7 @@ module.exports = class Vertex {
    * @param {array} path
    * @return {boolean} whether the delete was succesful
    */
-  delEdge (path) {
+  del (path) {
     path = Vertex.formatPath(path)
     return this._delete(path)
   }
