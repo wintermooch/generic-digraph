@@ -16,14 +16,14 @@ const Digraph = require('generic-digraph')
 var vertex = new Digraph()
 
 // now lets add an edge named 'friend' to the vertex with the value 'alice'
-vertex.setEdge('friend', 'alice')
+vertex.set('friend', 'alice')
 
-vertex.setEdge(['friend', 'brother'], 'bob')
+vertex.set(['friend', 'brother'], 'bob')
 // now the graph looks like:
 // [vertex]---friend--->[alice]---brother-->[bob]
 
 //path names and vertex values can be anything
-vertex.setEdge([new Buffer('friend'), 5, true, {}, new Date()], Array())
+vertex.set([new Buffer('friend'), 5, true, {}, new Date()], Array())
 
 // edges are stored in a Map
 vertex.edges // Map{}
@@ -35,11 +35,11 @@ var vertices = [...vertex]
 vertices = [...vertex.iteratePath(['friend', 'brother'])]
 
 // getting a vertex works like setting
-var friendsBotherVertex = vertex.setEdge(['friend', 'brother'])
+var friendsBotherVertex = vertex.set(['friend', 'brother'])
 friendsBotherVertex.getValue() // "bob"
 
 // delete an edge
-vertex.delEdge('friend')
+vertex.del('friend')
 // now the vertex is empty
 vertex.isEmpty()
 ```
