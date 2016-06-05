@@ -248,3 +248,15 @@ tape('to/fromJSON', function (t) {
   t.equal(JSON.stringify(json2), JSON.stringify(json), 'should produce and read json')
   t.end()
 })
+
+tape('mixin', function (t) {
+  t.plan(1)
+  class MyClass {
+    test (t) {
+      t.pass('mixin funciton called')
+    }
+  }
+  const Mixin = DG.Mixin(MyClass)
+  const mixed = new Mixin()
+  mixed.test(t)
+})

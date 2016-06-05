@@ -18,11 +18,11 @@
   "author": "mjbecze <mjbecze@gmail.com>",
   "license": "MPL-2.0",
   "devDependencies": {
-    "coveralls": "^2.11.4",
-    "documentation": "^3.0.4",
-    "istanbul": "^0.4.1",
-    "standard": "^5.2.2",
-    "tape": "^4.0.3"
+    "coveralls": "*",
+    "documentation": "*",
+    "istanbul": "*",
+    "standard": "*",
+    "tape": "*"
   },
   "repository": {
     "type": "git",
