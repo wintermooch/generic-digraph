@@ -39,6 +39,6 @@ function randomPathInsertionsAndDeletions (data) {
   })
 
   data.forEach((path) => {
-    graph.delete(path)
+    graph.del(path)
   })
 }
