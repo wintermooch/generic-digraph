@@ -1,6 +1,6 @@
 {
   "name": "generic-digraph",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "a generic directed graph implementation",
   "main": "index.js",
   "scripts": {
