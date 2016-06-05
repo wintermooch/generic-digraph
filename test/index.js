@@ -2,7 +2,7 @@
 const tape = require('tape')
 const DG = require('../')
 
-tape('basic', function (t) {
+tape('basic', (t) => {
   let graph = new DG()
   let a = Symbol('a value')
   let key = Symbol('key')
@@ -69,7 +69,7 @@ tape('basic', function (t) {
   t.end()
 })
 
-tape('paths', function (t) {
+tape('paths', (t) => {
   let graph = new DG()
   let path = Array(100).fill(Symbol())
   let value = Symbol()
@@ -93,7 +93,7 @@ tape('paths', function (t) {
   t.end()
 })
 
-tape('iterators', function (t) {
+tape('iterators', (t) => {
   let graph = new DG()
   let path = Array(100).fill(Symbol())
   let value = Symbol()
@@ -114,7 +114,7 @@ tape('iterators', function (t) {
   t.end()
 })
 
-tape('iterators - findPaths', function (t) {
+tape('iterators - findPaths', (t) => {
   let graph = new DG('root vertex')
   let pathA = Array(2).fill(Symbol('A'))
   let pathB = Array(2).fill(Symbol('B'))
@@ -157,7 +157,7 @@ tape('iterators - findPaths', function (t) {
   t.end()
 })
 
-tape('iterator - edges', function (t) {
+tape('iterator - edges', (t) => {
   let pathA = Array(2).fill(Symbol('A'))
   let pathB = Array(2).fill(Symbol('B'))
   let pathC = Array(2).fill(Symbol('C'))
@@ -171,7 +171,7 @@ tape('iterator - edges', function (t) {
   t.end()
 })
 
-tape('iterate', function (t) {
+tape('iterate', (t) => {
   let pathA = Array(2).fill(Symbol('A'))
   let pathB = Array(2).fill(Symbol('B'))
   let pathC = Array(2).fill(Symbol('C'))
@@ -192,7 +192,7 @@ tape('iterate', function (t) {
   t.end()
 })
 
-tape('delete vertex', function (t) {
+tape('delete vertex', (t) => {
   let graph = new DG('root vertex')
   let pathA = Array(2).fill(Symbol('A'))
   let pathB = Array(2).fill(Symbol('B'))
@@ -209,7 +209,7 @@ tape('delete vertex', function (t) {
   t.end()
 })
 
-tape('set a vertex', function (t) {
+tape('set a vertex', (t) => {
   let graph = new DG('root vertex')
   let pathA = Array(2).fill(Symbol('A'))
   let pathB = Array(2).fill(Symbol('B'))
@@ -228,7 +228,7 @@ tape('set a vertex', function (t) {
   t.end()
 })
 
-tape('to/fromJSON', function (t) {
+tape('to/fromJSON', (t) => {
   let graph = new DG('root vertex')
   let pathA = Array(2).fill('A')
   let pathB = Array(2).fill('B')
@@ -249,7 +249,7 @@ tape('to/fromJSON', function (t) {
   t.end()
 })
 
-tape('mixin', function (t) {
+tape('mixin', (t) => {
   t.plan(1)
   class MyClass {
     test (t) {
