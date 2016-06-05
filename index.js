@@ -3,13 +3,13 @@
 /**
  * A very generic directed graph implementation made to be easy to extend
  */
-module.exports = class Vertex {
-
+const VertexMixin = (superclass) => class Vertex extends superclass {
   /**
    * Create a new vertex
    * @param {Vertex} vertex a vertex to copy or an intial value
    */
   constructor (vertex) {
+    super()
     this._edges = this.constructor.Edges()
     this._value = vertex
 
@@ -25,6 +25,22 @@ module.exports = class Vertex {
         this._value = vertex
       }
     }
+  }
+
+  /**
+   * This provides a Mixin for this class
+   * @example
+   * class MyClass {
+   *   print (t) {
+   *     console.log('hell0!')
+   *   }
+   * }
+   * const Mixin = Digraph.Mixin(MyClass)
+   * const mixed = new Mixin()
+   * mixed.print()
+   */
+  static get Mixin () {
+    return VertexMixin
   }
 
   static Edges (edges) {
@@ -297,7 +313,7 @@ module.exports = class Vertex {
   /**
    * Does a depth first iteration of the graph
    */
-  * [Symbol.iterator] () {
+  * [Symbol.iterator ] () {
     // yield [[], this]
     const opts = {
       aggregate: function * (name, currVert, accum, results, cont) {
@@ -311,7 +327,7 @@ module.exports = class Vertex {
       },
       accumulate: []
     }
-    yield* this.iterate(opts)
+    yield * this.iterate(opts)
   }
 
   /**
@@ -334,7 +350,7 @@ module.exports = class Vertex {
 
     opts.aggregate = makeGenerator(opts.aggregate)
     opts.accumFn = makeGenerator(opts.accumFn)
-    return yield* this._iterate(opts, accum)
+    return yield * this._iterate(opts, accum)
 
     function makeGenerator (fn) {
       if (typeof fn !== 'function') {
@@ -361,7 +377,7 @@ module.exports = class Vertex {
     const results = []
 
     if (opts.accumFn) {
-      accum = yield* opts.accumFn(name, this, accum)
+      accum = yield * opts.accumFn(name, this, accum)
     }
 
     if (opts.continue && !opts.continue(name, this, accum)) {
@@ -372,7 +388,7 @@ module.exports = class Vertex {
       opts.visitedVertices.add(this)
       for (const edge of this._edges) {
         const childName = edge[0]
-        const result = yield* edge[1]._iterate(opts, accum, childName)
+        const result = yield * edge[1]._iterate(opts, accum, childName)
         if (result) {
           results.push([childName, result])
         }
@@ -380,7 +396,7 @@ module.exports = class Vertex {
     }
 
     if (opts.aggregate) {
-      return yield* opts.aggregate(name, this, accum, results, cont)
+      return yield * opts.aggregate(name, this, accum, results, cont)
     }
   }
 
@@ -495,3 +511,5 @@ module.exports = class Vertex {
     return vertices[0]
   }
 }
+
+module.exports = VertexMixin(function () {})
