@@ -1,6 +1,35 @@
+# Mixin
+
+[index.js:42-44](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L42-L44 "Source code on GitHub")
+
+This provides a Mixin for this class
+
+**Examples**
+
+```javascript
+class MyClass {
+  print (t) {
+    console.log('hell0!')
+  }
+}
+const Mixin = Digraph.Mixin(MyClass)
+const mixed = new Mixin()
+mixed.print()
+```
+
+# VertexMixin
+
+[index.js:6-513](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L6-L513 "Source code on GitHub")
+
+A very generic directed graph implementation made to be easy to extend
+
+**Parameters**
+
+-   `superclass`  
+
 # constructor
 
-[index.js:12-28](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L12-L28 "Source code on GitHub")
+[index.js:11-28](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L11-L28 "Source code on GitHub")
 
 Create a new vertex
 
@@ -10,7 +39,7 @@ Create a new vertex
 
 # copy
 
-[index.js:47-49](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L47-L49 "Source code on GitHub")
+[index.js:63-65](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L63-L65 "Source code on GitHub")
 
 Produces a copy of this vertex
 
@@ -18,7 +47,7 @@ Returns **vertex**
 
 # del
 
-[index.js:212-215](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L212-L215 "Source code on GitHub")
+[index.js:228-231](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L228-L231 "Source code on GitHub")
 
 deletes an Edge at a given path
 
@@ -30,7 +59,7 @@ Returns **boolean** whether the delete was succesful
 
 # delVertex
 
-[index.js:245-264](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L245-L264 "Source code on GitHub")
+[index.js:261-280](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L261-L280 "Source code on GitHub")
 
 Disconnects the given vertex from the graph
 
@@ -42,7 +71,7 @@ Returns **boolean** whether the delete was succesful
 
 # edges
 
-[index.js:54-56](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L54-L56 "Source code on GitHub")
+[index.js:70-72](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L70-L72 "Source code on GitHub")
 
 **Properties**
 
@@ -50,7 +79,7 @@ Returns **boolean** whether the delete was succesful
 
 # findPaths
 
-[index.js:407-453](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L407-L453 "Source code on GitHub")
+[index.js:423-469](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L423-L469 "Source code on GitHub")
 
 iterates all the acyclic path possibilties from the current vertex to a given vertex
 
@@ -60,7 +89,7 @@ iterates all the acyclic path possibilties from the current vertex to a given ve
 
 # formatPath
 
-[index.js:39-41](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L39-L41 "Source code on GitHub")
+[index.js:55-57](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L55-L57 "Source code on GitHub")
 
 The function used to format paths
 
@@ -72,7 +101,7 @@ Returns **array**
 
 # get
 
-[index.js:126-129](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L126-L129 "Source code on GitHub")
+[index.js:142-145](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L142-L145 "Source code on GitHub")
 
 Gets a vertex from the given path
 
@@ -84,7 +113,7 @@ Returns **DG**
 
 # getValue
 
-[index.js:77-84](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L77-L84 "Source code on GitHub")
+[index.js:93-100](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L93-L100 "Source code on GitHub")
 
 Get a vertex's value
 
@@ -94,19 +123,9 @@ Get a vertex's value
 
 Returns **Any** 
 
-# index
-
-[index.js:6-497](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L6-L497 "Source code on GitHub")
-
-A very generic directed graph implementation made to be easy to extend
-
-**Parameters**
-
--   `vertex`  
-
 # isEmpty
 
-[index.js:293-295](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L293-L295 "Source code on GitHub")
+[index.js:309-311](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L309-L311 "Source code on GitHub")
 
 Returns truthy on whether the vertexs is empty
 
@@ -114,7 +133,7 @@ Returns **boolean**
 
 # isLeaf
 
-[index.js:68-70](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L68-L70 "Source code on GitHub")
+[index.js:84-86](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L84-L86 "Source code on GitHub")
 
 **Properties**
 
@@ -122,7 +141,7 @@ Returns **boolean**
 
 # iterate
 
-[index.js:324-357](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L324-L357 "Source code on GitHub")
+[index.js:340-373](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L340-L373 "Source code on GitHub")
 
 Iterates over the graph
 
@@ -135,19 +154,19 @@ Iterates over the graph
 
 # iterateEdges
 
-[index.js:391-401](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L391-L401 "Source code on GitHub")
+[index.js:407-417](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L407-L417 "Source code on GitHub")
 
 Does a depth first iteration of all the edges in the graph.
 
 # iterator
 
-[index.js:300-315](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L300-L315 "Source code on GitHub")
+[index.js:316-331](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L316-L331 "Source code on GitHub")
 
 Does a depth first iteration of the graph
 
 # set
 
-[index.js:136-148](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L136-L148 "Source code on GitHub")
+[index.js:152-164](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L152-L164 "Source code on GitHub")
 
 Set an edge(s) on a given path to the givin vertex
 
@@ -158,7 +177,7 @@ Set an edge(s) on a given path to the givin vertex
 
 # setValue
 
-[index.js:100-108](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L100-L108 "Source code on GitHub")
+[index.js:116-124](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L116-L124 "Source code on GitHub")
 
 Set a vertex's value
 
@@ -169,7 +188,7 @@ Set a vertex's value
 
 # setVertex
 
-[index.js:271-287](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L271-L287 "Source code on GitHub")
+[index.js:287-303](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L287-L303 "Source code on GitHub")
 
 Finds a given vertex and updates it to the newVertex
 
@@ -181,7 +200,7 @@ Finds a given vertex and updates it to the newVertex
 
 # value
 
-[index.js:61-63](https://github.com/wanderer/generic-digraph/blob/c59c7de33d9bbf3d5dae59532141eed622fd2158/index.js#L61-L63 "Source code on GitHub")
+[index.js:77-79](https://github.com/wanderer/generic-digraph/blob/08324ffec3feb83e14a516dbf5fc9eb76b02c449/index.js#L77-L79 "Source code on GitHub")
 
 **Properties**
 
