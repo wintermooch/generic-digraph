@@ -136,12 +136,11 @@ const VertexMixin = (superclass) => class Vertex extends superclass {
     }
     path = Vertex.formatPath(path)
     if (path.length === 1) {
-      return this._edges.set(path[0], vertex)
+      this._edges.set(path[0], vertex)
     } else {
-      // all the real work is done here
       const name = path.slice(-1)[0]
       path = path.slice(0, -1)
-      return this._getOrExtend(path)._edges.set(name, vertex)
+      this._getOrExtend(path)._edges.set(name, vertex)
     }
   }
 
