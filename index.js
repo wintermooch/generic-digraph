@@ -107,23 +107,11 @@ const VertexMixin = (superclass) => class Vertex extends superclass {
    */
   setValue (path, val) {
     if (arguments.length === 1) {
-      return this._setValue(path)
+      this._value = path
     } else {
       path = Vertex.formatPath(path)
-      path.push(val)
-      return this._set(path, null, '_setValue')
+      this._getOrExtend(path)._value = val
     }
-  }
-
-  /**
-   * Set this vertex's value
-   * @param {array} [path]
-   * @param {*} val
-   * @private
-   */
-  _setValue (val) {
-    this._value = val
-    return this
   }
 
   /**
@@ -148,34 +136,26 @@ const VertexMixin = (superclass) => class Vertex extends superclass {
     }
     path = Vertex.formatPath(path)
     if (path.length === 1) {
-      return this._setEdge(path[0], vertex)
+      return this._edges.set(path[0], vertex)
     } else {
       // all the real work is done here
-      return this._set(path, vertex, '_setEdge')
+      const name = path.slice(-1)[0]
+      path = path.slice(0, -1)
+      return this._getOrExtend(path)._edges.set(name, vertex)
     }
   }
 
   /**
-   * Set this vertex
-   * @param {*} vertex
-   * @private
-   */
-  _setEdge (edge, vertex) {
-    this._edges.set(edge, vertex)
-  }
-
-  /**
-   * over ride this for a custom set
+   * gets the diven path or adds nodes to graph creating the path
    * @param {array} path
    * @param {*} vertex
    * @private
    */
-  _set (path, payload, setFnc) {
+  _getOrExtend (path) {
     const name = path[0]
-    path = path.slice(1)
     // we are at the end of the path
     if (!path.length) {
-      return this[setFnc](name, payload)
+      return this
     } else {
       let nextVertex = this._edges.get(name)
       // automatically grow the graph if the path enconters missing vertices
@@ -183,8 +163,7 @@ const VertexMixin = (superclass) => class Vertex extends superclass {
         nextVertex = new this.constructor()
         this._edges.set(name, nextVertex)
       }
-      nextVertex._set(path, payload, setFnc)
-      return
+      return nextVertex._getOrExtend(path.slice(1))
     }
   }
 
