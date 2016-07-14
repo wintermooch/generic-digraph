@@ -93,20 +93,11 @@ const VertexMixin = (superclass) => class Vertex extends superclass {
    */
   getValue (path) {
     if (arguments.length === 0) {
-      return this._getValue()
+      return this._value
     } else {
       path = Vertex.formatPath(path)
-      return this._get(path, '_getValue')
+      return this._get(path)._value
     }
-  }
-
-  /**
-   * Get this vertex's value
-   * @return {*}
-   * @private
-   */
-  _getValue () {
-    return this._value
   }
 
   /**
@@ -203,22 +194,18 @@ const VertexMixin = (superclass) => class Vertex extends superclass {
    * @return {DG}
    * @private
    */
-  _get (path, getFnc) {
+  _get (path) {
     // the last name in the path
     if (!path.length) {
-      if (getFnc) {
-        return this[getFnc]()
-      } else {
-        return this
-      }
+      return this
     } else {
       const name = path[0]
       path = path.slice(1)
       let nextVertex = this._edges.get(name)
       if (!nextVertex) {
-        return
+        return 
       } else {
-        return nextVertex._get(path, getFnc)
+        return nextVertex._get(path)
       }
     }
   }
