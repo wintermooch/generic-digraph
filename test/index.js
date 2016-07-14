@@ -260,3 +260,12 @@ tape('mixin', (t) => {
   const mixed = new Mixin()
   mixed.test(t)
 })
+
+tape('path types', (t) => {
+  const graph = new DG('root vertex')
+  graph.set('test', 5)
+  t.equal(graph.getValue('test'), 5)
+  graph.set(new Uint8Array([3, 3, 3]), 99)
+  t.equal(graph.getValue(new Uint8Array([3, 3, 3])), 99)
+  t.end()
+})

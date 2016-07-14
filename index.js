@@ -53,7 +53,8 @@ const VertexMixin = (superclass) => class Vertex extends superclass {
    * @return {array}
    */
   static formatPath (path) {
-    return (Array.isArray(path) ? path : [path]).slice()
+    return ((typeof (path.length) === 'number' && typeof path !== 'string')
+      ? path : [path]).slice()
   }
 
   /**
@@ -179,7 +180,8 @@ const VertexMixin = (superclass) => class Vertex extends superclass {
    * @private
    */
   _set (path, payload, setFnc) {
-    const name = path.shift()
+    const name = path[0]
+    path = path.slice(1)
     // we are at the end of the path
     if (!path.length) {
       return this[setFnc](name, payload)
@@ -210,7 +212,8 @@ const VertexMixin = (superclass) => class Vertex extends superclass {
         return this
       }
     } else {
-      const name = path.shift()
+      const name = path[0]
+      path = path.slice(1)
       let nextVertex = this._edges.get(name)
       if (!nextVertex) {
         return
